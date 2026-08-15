@@ -4858,11 +4858,15 @@
       }
       
       .action-btn {
-        width: 140px !important;
+        width: auto !important;
+        min-width: 140px !important;
         font-size: 14px !important;
-        padding: 8px 0 !important;
+        padding: 10px 20px !important;
       }
-      
+      .private-match-card-btn {
+        width: 140px !important;
+        height: 140px !important;
+      }
       /* Message Overlay (Yellow Title) Resize for mobile */
       .message-overlay {
         font-size: 24px !important;
@@ -9327,7 +9331,7 @@
                          onTouchStart={handleCarouselTouchStart}
                          onTouchMove={handleCarouselTouchMove}
                          onTouchEnd={handleCarouselTouchEnd}>
-                      <div className="carousel-arrow left" onClick={() => setCarouselIndex((prev) => (prev - 1 + 3) % 3)}>◀</div>
+                      <div className="carousel-arrow left" onClick={() => setCarouselIndex((prev) => (prev + 1) % 3)}>◀</div>
                       
                       <div className="carousel-window">
                         <div className="carousel-track" style={{ transform: `translateX(-${carouselIndex * 33.3333}%)` }}>
@@ -9353,7 +9357,7 @@
                         </div>
                       </div>
 
-                      <div className="carousel-arrow right" onClick={() => setCarouselIndex((prev) => (prev + 1) % 3)}>▶</div>
+                      <div className="carousel-arrow right" onClick={() => setCarouselIndex((prev) => (prev - 1 + 3) % 3)}>▶</div>
                       
                       <div className="carousel-indicators">
                         <span className={`indicator-dot ${carouselIndex === 0 ? 'active' : ''}`} />
@@ -9404,7 +9408,7 @@
 
 {multiplayerMode === 'online' && (
   <>
-  <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', pointerEvents: 'auto', paddingTop: '12vh', gap: '30px'}}>
+  <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none', pointerEvents: 'auto', paddingTop: '12vh', gap: '30px'}}>
     <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>ONLINE PLAY</div>
     
     <div style={{ background: 'rgba(20,0,0,0.8)', padding: '30px 50px', borderRadius: '15px', border: '1px solid var(--color-gold)', textAlign: 'center', boxShadow: '0 0 30px rgba(212,175,55,0.2)' }}>
@@ -9450,7 +9454,7 @@
 
 {multiplayerMode === 'cpu_lobby' && (
   <>
-  <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', pointerEvents: 'auto', paddingTop: '12vh', gap: '30px'}}>
+  <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none', pointerEvents: 'auto', paddingTop: '12vh', gap: '30px'}}>
     <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>CPU PLAY</div>
     
     <div style={{ background: 'rgba(20,0,0,0.8)', padding: '30px 50px', borderRadius: '15px', border: '1px solid var(--color-gold)', textAlign: 'center', boxShadow: '0 0 30px rgba(212,175,55,0.2)' }}>
@@ -9479,7 +9483,7 @@
 
 {multiplayerMode === 'select' && (
                 <>
-                <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', pointerEvents: 'auto', paddingTop: '12vh'}}>
+                <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none', pointerEvents: 'auto', paddingTop: '12vh'}}>
                   <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2rem', letterSpacing: '4px', marginBottom: '30px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>PRIVATE MATCH</div>
                   <div style={{ display: 'flex', gap: '30px' }}>
                     <div className="mode-btn-wrapper"
@@ -9510,7 +9514,7 @@
               )}
 
               {multiplayerMode === 'search' && (
-                <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent'}}>
+                <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none'}}>
                   <div className="selection-guide" style={{color: 'var(--color-gold)', textShadow: '0 0 15px rgba(212, 175, 55, 0.5)', fontSize: '1.8rem', marginBottom: '30px', letterSpacing: '2px'}}>ルーム番号を入力</div>
                   <input type="text" className="passphrase-input" placeholder="4桁の数字..." 
                     value={passphrase} onChange={(e) => setPassphrase(e.target.value)} style={{fontSize: '1.5rem', padding: '15px 20px', width: '280px', borderRadius: '10px', boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8), 0 0 15px rgba(212, 175, 55, 0.3)', marginBottom: '40px'}} />
@@ -9572,7 +9576,7 @@
                 return (
                   <button style={{ 
                     position: 'absolute', top: '135px', left: '110px', zIndex: 10000,
-                    background: 'transparent', border: '1px solid var(--color-gold)', borderRadius: '50%',
+                    background: 'transparent', boxShadow: 'none', border: 'none', border: '1px solid var(--color-gold)', borderRadius: '50%',
                     width: '36px', height: '36px', display: 'flex', justifyContent: 'center', alignItems: 'center',
                     color: 'var(--color-gold)', 
                     cursor: allHumansFinished ? 'pointer' : 'default', 
@@ -9593,7 +9597,7 @@
               })()}
 
               {multiplayerMode === 'lobby' && (
-                <div className="selection-overlay-ui" style={{ zIndex: 6000, background: 'transparent', padding: '40px', marginTop: '22vh', boxShadow: 'none', border: 'none' }}>
+                <div className="selection-overlay-ui" style={{ zIndex: 6000, background: 'transparent', boxShadow: 'none', border: 'none', padding: '40px', marginTop: '22vh', boxShadow: 'none', border: 'none' }}>
                   <div className="selection-guide" style={{color: 'var(--color-gold)', textShadow: '0 0 15px rgba(212, 175, 55, 0.5)', fontSize: '1.8rem', marginBottom: '10px', letterSpacing: '2px'}}>待機中</div>
                   <div style={{fontFamily: "'Courier New', monospace", fontSize: '1.4rem', color: '#fff', marginBottom: '20px', padding: '10px 20px', background: '#000', borderRadius: '8px', border: '1px solid #333'}}>ルーム番号: <span style={{color: 'var(--color-gold)', fontWeight: 'bold'}}>{passphrase}</span></div>
                   <div className="player-lobby-list" style={{ margin: '10px 0 30px', display: 'flex', flexDirection: 'column', gap: '10px', width: '300px' }}>
@@ -10294,7 +10298,7 @@
     <div style={{background: '#2A0510', border: '2px solid var(--color-gold)', borderRadius: '10px', padding: '30px', width: '80%', maxWidth: '600px', maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 0 30px rgba(212, 175, 55, 0.4)'}}>
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'}}>
         <h2 style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', serif", margin: 0}}>LEADERBOARD</h2>
-        <button onClick={() => setShowLeaderboard(false)} style={{background: 'transparent', border: 'none', color: '#ccc', fontSize: '1.5rem', cursor: 'pointer'}}>×</button>
+        <button onClick={() => setShowLeaderboard(false)} style={{background: 'transparent', boxShadow: 'none', border: 'none', border: 'none', color: '#ccc', fontSize: '1.5rem', cursor: 'pointer'}}>×</button>
       </div>
       <table style={{width: '100%', color: '#fff', borderCollapse: 'collapse', textAlign: 'left'}}>
         <thead>
