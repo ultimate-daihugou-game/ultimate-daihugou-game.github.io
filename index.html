@@ -5143,6 +5143,80 @@
         font-size: 0.8rem;
         padding: 8px 16px;
       }
+
+      /* Mobile Carousel Styling */
+      .mode-select-carousel {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 50;
+      }
+      .carousel-window {
+        width: 60vw;
+        overflow: hidden;
+      }
+      .carousel-track {
+        display: flex;
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        width: 300%;
+      }
+      .carousel-item {
+        width: 33.3333%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 10px;
+      }
+      .carousel-item .mode-image-button {
+        width: 50vw;
+        height: 50vw;
+        max-width: 250px;
+        max-height: 250px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
+      }
+      .carousel-item .mode-description-inline {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #ffd700;
+        text-align: center;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        white-space: pre-wrap;
+      }
+      .carousel-arrow {
+        font-size: 40px;
+        color: #d4af37;
+        text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.8);
+        cursor: pointer;
+        padding: 20px;
+        user-select: none;
+      }
+      .carousel-indicators {
+        position: absolute;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 12px;
+      }
+      .indicator-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        border: 1px solid #d4af37;
+        transition: all 0.3s;
+      }
+      .indicator-dot.active {
+        background: #d4af37;
+        box-shadow: 0 0 10px #d4af37;
+      }
     }
 
     /* --- アバター肖像画スタイル --- */
@@ -6379,6 +6453,28 @@
   const [hoveredMode, setHoveredMode] = useState(null);
   const [showLegalModal, setShowLegalModal] = useState(null);
   const [showInterstitialAd, setShowInterstitialAd] = useState(false);
+  
+  // Carousel State for Mobile
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  const handleCarouselTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleCarouselTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+  const handleCarouselTouchEnd = () => {
+    if (touchStartX.current - touchEndX.current > 50) {
+      setCarouselIndex((prev) => (prev + 1) % 3);
+    } else if (touchEndX.current - touchStartX.current > 50) {
+      setCarouselIndex((prev) => (prev - 1 + 3) % 3);
+    }
+    // reset
+    touchStartX.current = 0;
+    touchEndX.current = 0;
+  };
   
   const handleExitWithAd = () => {
     // 30%の確率で全面広告を表示
@@ -9123,11 +9219,50 @@
                   </div>
 
                   
+                  {isMobile ? (
+                    <div className="mode-select-carousel animate-fade-in"
+                         onTouchStart={handleCarouselTouchStart}
+                         onTouchMove={handleCarouselTouchMove}
+                         onTouchEnd={handleCarouselTouchEnd}>
+                      <div className="carousel-arrow left" onClick={() => setCarouselIndex((prev) => (prev - 1 + 3) % 3)}>◀</div>
+                      
+                      <div className="carousel-window">
+                        <div className="carousel-track" style={{ transform: `translateX(-${carouselIndex * 100}%)` }}>
+                          
+                          {/* Item 0: Online */}
+                          <div className="carousel-item">
+                            <img src="online.png" alt="Online Play" className="mode-image-button" onClick={() => { setMultiplayerMode('online'); setOnlineMatchStatus('idle'); }} />
+                            <div className="mode-description-inline visible">全国のプレイヤーとレートを競う<br/>オンライン対戦</div>
+                          </div>
+                          
+                          {/* Item 1: Multi */}
+                          <div className="carousel-item">
+                            <img src="mulch.png" alt="Multi Play" className="mode-image-button" onClick={() => setMultiplayerMode('select')} />
+                            <div className="mode-description-inline visible">合言葉を使って<br/>友達と一緒にプレイ</div>
+                          </div>
+
+                          {/* Item 2: CPU */}
+                          <div className="carousel-item">
+                            <img src="CPU.png" alt="CPU Play" className="mode-image-button" onClick={() => setMultiplayerMode('cpu_lobby')} />
+                            <div className="mode-description-inline visible">強力なCPUと対戦して腕を磨く<br/>一人用モード</div>
+                          </div>
+                          
+                        </div>
+                      </div>
+
+                      <div className="carousel-arrow right" onClick={() => setCarouselIndex((prev) => (prev + 1) % 3)}>▶</div>
+                      
+                      <div className="carousel-indicators">
+                        <span className={`indicator-dot ${carouselIndex === 0 ? 'active' : ''}`} />
+                        <span className={`indicator-dot ${carouselIndex === 1 ? 'active' : ''}`} />
+                        <span className={`indicator-dot ${carouselIndex === 2 ? 'active' : ''}`} />
+                      </div>
+                    </div>
+                  ) : (
                   <div className="mode-select-container three-columns animate-fade-in" style={{gap: '40px', alignItems: 'flex-start', position: 'absolute', top: '65%', left: '50%', transform: 'translate(-50%, -50%)', width: '100%', justifyContent: 'center', zIndex: 50}}>
                     {/* Online Play */}
                     <div className="mode-btn-wrapper" 
-                         onMouseEnter={() => setHoveredMode('online')} onMouseLeave={() => setHoveredMode(null)}
-                         onTouchStart={() => setHoveredMode('online')} onTouchEnd={() => setHoveredMode(null)}>
+                         onMouseEnter={() => setHoveredMode('online')} onMouseLeave={() => setHoveredMode(null)}>
                       <img src="online.png" alt="Online Play" className="mode-image-button" onClick={() => { setMultiplayerMode('online'); setOnlineMatchStatus('idle'); }} />
                       <div className={`mode-description-inline ${hoveredMode === 'online' ? 'visible' : ''}`} style={{opacity: hoveredMode === 'online' ? 1 : 0}}>
                         全国のプレイヤーとレートを競うオンライン対戦
@@ -9136,8 +9271,7 @@
 
                     {/* Multi Play */}
                     <div className="mode-btn-wrapper" 
-                         onMouseEnter={() => setHoveredMode('multi')} onMouseLeave={() => setHoveredMode(null)}
-                         onTouchStart={() => setHoveredMode('multi')} onTouchEnd={() => setHoveredMode(null)}>
+                         onMouseEnter={() => setHoveredMode('multi')} onMouseLeave={() => setHoveredMode(null)}>
                       <img src="mulch.png" alt="Multi Play" className="mode-image-button" onClick={() => setMultiplayerMode('select')} />
                       <div className={`mode-description-inline ${hoveredMode === 'multi' ? 'visible' : ''}`} style={{opacity: hoveredMode === 'multi' ? 1 : 0}}>
                         合言葉を使って友達と一緒にプレイ
@@ -9146,14 +9280,14 @@
 
                     {/* CPU Play */}
                     <div className="mode-btn-wrapper" 
-                         onMouseEnter={() => setHoveredMode('cpu')} onMouseLeave={() => setHoveredMode(null)}
-                         onTouchStart={() => setHoveredMode('cpu')} onTouchEnd={() => setHoveredMode(null)}>
+                         onMouseEnter={() => setHoveredMode('cpu')} onMouseLeave={() => setHoveredMode(null)}>
                       <img src="CPU.png" alt="CPU Play" className="mode-image-button" onClick={() => setMultiplayerMode('cpu_lobby')} />
                       <div className={`mode-description-inline ${hoveredMode === 'cpu' ? 'visible' : ''}`} style={{opacity: hoveredMode === 'cpu' ? 1 : 0}}>
                         強力なCPUと対戦して腕を磨く一人用モード
                       </div>
                     </div>
                   </div>
+                  )}
 
                   <div className="mode-aux-buttons left-aligned animate-fade-in">
                     <button className="btn-back" onClick={() => { setTitleStage(1); sm.playTitleBGM(); }}>
