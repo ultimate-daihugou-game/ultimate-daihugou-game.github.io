@@ -3194,7 +3194,37 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 5px #d4af37;
     }
 
+    .fullscreen-lobby-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5000;
+      pointer-events: auto;
+    }
 
+    .selection-overlay-ui {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      padding: 24px;
+      background: rgba(15, 5, 5, 0.9);
+      border: 2px solid var(--color-gold);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(212, 175, 55, 0.1);
+      z-index: 5000;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 300px;
+    }
 
     /* アクションパネルの位置を下げて手札と被らないように調整 */
     .action-panel {
@@ -9427,8 +9457,8 @@
 
 {multiplayerMode === 'online' && (
   <>
-  <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none', pointerEvents: 'auto', paddingTop: '12vh', gap: '30px'}}>
-    <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>ONLINE PLAY</div>
+  <div className="fullscreen-lobby-container">
+    <div style={{position: 'absolute', top: '15vh', color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>ONLINE PLAY</div>
     
     <div style={{ background: 'rgba(20,0,0,0.8)', padding: '30px 50px', borderRadius: '15px', border: '1px solid var(--color-gold)', textAlign: 'center', boxShadow: '0 0 30px rgba(212,175,55,0.2)' }}>
       <div style={{ fontSize: '1.5rem', color: '#ccc', marginBottom: '15px' }}>{myProfile.display_name}</div>
@@ -9473,8 +9503,8 @@
 
 {multiplayerMode === 'cpu_lobby' && (
   <>
-  <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none', pointerEvents: 'auto', paddingTop: '12vh', gap: '30px'}}>
-    <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>CPU PLAY</div>
+  <div className="fullscreen-lobby-container">
+    <div style={{position: 'absolute', top: '15vh', color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>CPU PLAY</div>
     
     <div style={{ background: 'rgba(20,0,0,0.8)', padding: '30px 50px', borderRadius: '15px', border: '1px solid var(--color-gold)', textAlign: 'center', boxShadow: '0 0 30px rgba(212,175,55,0.2)' }}>
       <div style={{ fontSize: '1.5rem', color: '#ccc', marginBottom: '15px' }}>{myProfile.display_name}</div>
@@ -9502,8 +9532,8 @@
 
 {multiplayerMode === 'select' && (
                 <>
-                <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none', pointerEvents: 'auto', paddingTop: '12vh'}}>
-                  <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2rem', letterSpacing: '4px', marginBottom: '30px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>PRIVATE MATCH</div>
+                <div className="fullscreen-lobby-container">
+                  <div style={{position: 'absolute', top: '15vh', color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>PRIVATE MATCH</div>
                   {isMobile ? (
                     <div className="mode-select-carousel animate-fade-in"
                          onTouchStart={handlePrivateTouchStart}
@@ -9565,7 +9595,7 @@
               )}
 
               {multiplayerMode === 'search' && (
-                <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none'}}>
+                <div className="fullscreen-lobby-container">
                   <div className="selection-guide" style={{color: 'var(--color-gold)', textShadow: '0 0 15px rgba(212, 175, 55, 0.5)', fontSize: '1.8rem', marginBottom: '30px', letterSpacing: '2px'}}>ルーム番号を入力</div>
                   <input type="text" className="passphrase-input" placeholder="4桁の数字..." 
                     value={passphrase} onChange={(e) => setPassphrase(e.target.value)} style={{fontSize: '1.5rem', padding: '15px 20px', width: '280px', borderRadius: '10px', boxShadow: 'inset 0 0 10px rgba(0,0,0,0.8), 0 0 15px rgba(212, 175, 55, 0.3)', marginBottom: '40px'}} />
