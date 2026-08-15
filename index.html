@@ -5148,17 +5148,15 @@
       .mode-select-carousel {
         position: absolute;
         top: 60%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        left: 0;
+        transform: translateY(-50%);
         width: 100vw;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
         z-index: 50;
       }
       .carousel-window {
-        width: 60vw;
+        width: 100vw;
         overflow: hidden;
+        padding: 20px 0;
       }
       .carousel-track {
         display: flex;
@@ -5171,7 +5169,6 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding-top: 10px;
       }
       .carousel-item .mode-image-button {
         width: 50vw;
@@ -5190,16 +5187,26 @@
         white-space: pre-wrap;
       }
       .carousel-arrow {
+        position: absolute;
+        top: 40%;
+        transform: translateY(-50%);
         font-size: 40px;
         color: #d4af37;
         text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.8);
         cursor: pointer;
         padding: 20px;
         user-select: none;
+        z-index: 10;
+      }
+      .carousel-arrow.left {
+        left: 0;
+      }
+      .carousel-arrow.right {
+        right: 0;
       }
       .carousel-indicators {
         position: absolute;
-        bottom: -50px;
+        bottom: -30px;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
