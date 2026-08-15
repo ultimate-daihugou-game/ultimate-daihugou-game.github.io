@@ -5143,6 +5143,10 @@
         font-size: 0.8rem;
         padding: 8px 16px;
       }
+      .mode-aux-buttons.left-aligned {
+        bottom: 60px !important;
+        left: 20px !important;
+      }
 
       /* Mobile Carousel Styling */
       .mode-select-carousel {
@@ -5190,26 +5194,13 @@
         position: absolute;
         top: 40%;
         transform: translateY(-50%);
-        width: 45px;
-        height: 45px;
-        background: radial-gradient(circle, #fde08b 0%, #d4af37 60%, #8a6a1c 100%);
-        border: 2px solid #ffeba1;
-        border-radius: 50%;
-        color: #4a0000;
-        font-size: 22px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 0 15px rgba(212, 175, 55, 0.8), inset 0 0 8px rgba(255,255,255,0.8);
+        font-size: 40px;
+        color: #d4af37;
+        text-shadow: 0 0 10px rgba(0,0,0,0.8), 0 0 20px rgba(212, 175, 55, 0.8);
         cursor: pointer;
+        padding: 20px;
         user-select: none;
         z-index: 10;
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-      .carousel-arrow:active {
-        transform: translateY(-50%) scale(0.9);
-        box-shadow: 0 0 5px rgba(212, 175, 55, 0.8);
       }
       .carousel-arrow.left {
         left: 10px;
@@ -5218,7 +5209,7 @@
         right: 10px;
       }
       .stage2-top-logo {
-        top: 20vh !important;
+        top: 15vh !important;
         width: 85vw !important;
       }
       .carousel-indicators {
