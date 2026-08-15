@@ -6578,6 +6578,25 @@
     touchStartX.current = 0;
     touchEndX.current = 0;
   };
+
+  const [privateCarouselIndex, setPrivateCarouselIndex] = useState(0);
+  const privateTouchStartX = useRef(0);
+  const privateTouchEndX = useRef(0);
+  const handlePrivateTouchStart = (e) => {
+    privateTouchStartX.current = e.touches[0].clientX;
+  };
+  const handlePrivateTouchMove = (e) => {
+    privateTouchEndX.current = e.touches[0].clientX;
+  };
+  const handlePrivateTouchEnd = () => {
+    if (privateTouchStartX.current - privateTouchEndX.current > 50) {
+      setPrivateCarouselIndex((prev) => (prev + 1) % 2);
+    } else if (privateTouchEndX.current - privateTouchStartX.current > 50) {
+      setPrivateCarouselIndex((prev) => (prev - 1 + 2) % 2);
+    }
+    privateTouchStartX.current = 0;
+    privateTouchEndX.current = 0;
+  };
   
   const handleExitWithAd = () => {
     // 30%の確率で全面広告を表示
@@ -9485,25 +9504,57 @@
                 <>
                 <div className="selection-overlay-ui" style={{width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none', pointerEvents: 'auto', paddingTop: '12vh'}}>
                   <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2rem', letterSpacing: '4px', marginBottom: '30px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>PRIVATE MATCH</div>
-                  <div style={{ display: 'flex', gap: '30px' }}>
-                    <div className="mode-btn-wrapper"
-                         onMouseEnter={() => setHoveredMode('create_room')} onMouseLeave={() => setHoveredMode(null)}
-                         onTouchStart={() => setHoveredMode('create_room')} onTouchEnd={() => setHoveredMode(null)}>
-                      <div className="private-match-card-btn" style={{backgroundImage: "url('room home.png')"}} onClick={createRoom}></div>
-                      <div className={`mode-description-inline ${hoveredMode === 'create_room' ? 'visible' : ''}`} style={{opacity: hoveredMode === 'create_room' ? 1 : 0, marginTop: '20px'}}>
-                        ルームを作成してホストになる
+                  {isMobile ? (
+                    <div className="mode-select-carousel animate-fade-in"
+                         onTouchStart={handlePrivateTouchStart}
+                         onTouchMove={handlePrivateTouchMove}
+                         onTouchEnd={handlePrivateTouchEnd}>
+                      <div className="carousel-arrow left" onClick={() => setPrivateCarouselIndex((prev) => (prev + 1) % 2)}>◀</div>
+                      
+                      <div className="carousel-window">
+                        <div className="carousel-track" style={{ width: '200%', transform: `translateX(-${privateCarouselIndex * 50}%)` }}>
+                          
+                          {/* Item 0: Create Room */}
+                          <div className="carousel-item" style={{ width: '50%' }}>
+                            <img src="room home.png" alt="Create Room" className="mode-image-button" onClick={createRoom} />
+                            <div className="mode-description-inline visible">ルームを作成して<br/>ホストになる</div>
+                          </div>
+                          
+                          {/* Item 1: Find Room */}
+                          <div className="carousel-item" style={{ width: '50%' }}>
+                            <img src="room2.png" alt="Find Room" className="mode-image-button" onClick={() => setMultiplayerMode('search')} />
+                            <div className="mode-description-inline visible">ルーム番号を入力して<br/>入室する</div>
+                          </div>
+                          
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="mode-btn-wrapper"
-                         onMouseEnter={() => setHoveredMode('find_room')} onMouseLeave={() => setHoveredMode(null)}
-                         onTouchStart={() => setHoveredMode('find_room')} onTouchEnd={() => setHoveredMode(null)}>
-                      <div className="private-match-card-btn" style={{backgroundImage: "url('room2.png')"}} onClick={() => setMultiplayerMode('search')}></div>
-                      <div className={`mode-description-inline ${hoveredMode === 'find_room' ? 'visible' : ''}`} style={{opacity: hoveredMode === 'find_room' ? 1 : 0, marginTop: '20px'}}>
-                        ルーム番号を入力して入室する
+                      <div className="carousel-arrow right" onClick={() => setPrivateCarouselIndex((prev) => (prev - 1 + 2) % 2)}>▶</div>
+                      
+                      <div className="carousel-indicators">
+                        <span className={`indicator-dot ${privateCarouselIndex === 0 ? 'active' : ''}`} />
+                        <span className={`indicator-dot ${privateCarouselIndex === 1 ? 'active' : ''}`} />
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div style={{ display: 'flex', gap: '30px' }}>
+                      <div className="mode-btn-wrapper"
+                           onMouseEnter={() => setHoveredMode('create_room')} onMouseLeave={() => setHoveredMode(null)}>
+                        <div className="private-match-card-btn" style={{backgroundImage: "url('room home.png')"}} onClick={createRoom}></div>
+                        <div className={`mode-description-inline ${hoveredMode === 'create_room' ? 'visible' : ''}`} style={{opacity: hoveredMode === 'create_room' ? 1 : 0, marginTop: '20px'}}>
+                          ルームを作成してホストになる
+                        </div>
+                      </div>
+
+                      <div className="mode-btn-wrapper"
+                           onMouseEnter={() => setHoveredMode('find_room')} onMouseLeave={() => setHoveredMode(null)}>
+                        <div className="private-match-card-btn" style={{backgroundImage: "url('room2.png')"}} onClick={() => setMultiplayerMode('search')}></div>
+                        <div className={`mode-description-inline ${hoveredMode === 'find_room' ? 'visible' : ''}`} style={{opacity: hoveredMode === 'find_room' ? 1 : 0, marginTop: '20px'}}>
+                          ルーム番号を入力して入室する
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="mode-aux-buttons left-aligned animate-fade-in">
                   <button className="btn-back" onClick={() => { setMultiplayerMode(null); sm.playHomeBGM(); }}>
