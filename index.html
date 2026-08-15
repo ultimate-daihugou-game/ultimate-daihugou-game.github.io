@@ -5235,17 +5235,19 @@
       
       /* Mobile Margins & Ad Space */
       .game-container {
-        position: absolute;
+        position: fixed;
         top: 60px;
         bottom: 60px;
         left: 0;
-        width: 100vw;
+        right: 0;
+        width: auto;
         height: auto !important;
         overflow: visible;
+        z-index: 1; /* Make sure it doesn't cover fixed margins */
       }
       .top-right-icon-buttons {
         top: auto !important;
-        bottom: 25px !important;
+        bottom: 30px !important;
         right: 15px !important;
         gap: 10px !important;
         z-index: 10001 !important;
@@ -5255,7 +5257,7 @@
         height: 40px !important;
       }
       .mode-aux-buttons.left-aligned {
-        bottom: 25px !important;
+        bottom: 30px !important;
         left: 15px !important;
         z-index: 10001 !important;
       }
