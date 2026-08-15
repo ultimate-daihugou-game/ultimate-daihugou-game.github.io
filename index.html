@@ -767,7 +767,7 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(circle at center, #7A0A15 0%, #3A050A 100%);
+      background: radial-gradient(circle at center, #1b5e20 0%, #003300 100%);
     }
 
     .player-pos {
@@ -6138,7 +6138,7 @@
         z-index: 10 !important;
       }
       .player-pos.pos-bottom {
-        bottom: 220px !important;
+        bottom: 170px !important;
       }
       .player-center-info,
       .pos-top .player-center-info,
@@ -6156,7 +6156,7 @@
       .player-area.player-0 .player-center-info,
       .pos-bottom .player-center-info {
         position: absolute !important;
-        bottom: 230px !important;
+        bottom: 180px !important;
         left: 10px !important;
         top: auto !important;
         right: auto !important;
@@ -6169,6 +6169,23 @@
         right: 10px !important;
         transform: scale(0.5) !important;
         transform-origin: bottom right;
+      }
+      /* Centered & Elevated Field Layout */
+      .play-area {
+        width: 280px !important;
+        height: 280px !important;
+        top: 42% !important; 
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 150 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .bg-reverse-indicator {
+        top: 42% !important; 
+        left: 50% !important;
+        width: 38vh !important;
+        height: 38vh !important;
       }
       .cpu-decorative-cards {
         position: absolute;
