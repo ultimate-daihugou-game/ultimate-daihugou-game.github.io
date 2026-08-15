@@ -5246,8 +5246,9 @@
         z-index: 1; /* Make sure it doesn't cover fixed margins */
       }
       .top-right-icon-buttons {
+        position: fixed !important;
         top: auto !important;
-        bottom: 15px !important;
+        bottom: 75px !important;
         right: 15px !important;
         gap: 10px !important;
         z-index: 10001 !important;
@@ -5257,10 +5258,11 @@
         height: 40px !important;
       }
       .mode-aux-buttons.left-aligned {
+        position: fixed !important;
         top: auto !important;
-        bottom: 15px !important;
+        bottom: 75px !important; /* 60px bottom margin + 15px spacing */
         left: auto !important;
-        right: 170px !important;
+        right: 165px !important; /* Right next to the icon group */
         width: auto !important;
         transform: none !important;
         z-index: 10001 !important;
