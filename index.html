@@ -3206,6 +3206,7 @@
       justify-content: center;
       z-index: 5000;
       pointer-events: auto;
+      padding-top: 12vh;
     }
 
     .selection-overlay-ui {
@@ -5307,6 +5308,12 @@
       }
       .mode-select-carousel {
         top: 50% !important;
+      }
+      .lobby-carousel {
+        position: relative !important;
+        top: auto !important;
+        transform: none !important;
+        margin-top: 20px !important;
       }
       .mobile-margin-top {
         position: fixed;
@@ -9458,7 +9465,7 @@
 {multiplayerMode === 'online' && (
   <>
   <div className="fullscreen-lobby-container">
-    <div style={{position: 'absolute', top: '15vh', color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>ONLINE PLAY</div>
+    <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>ONLINE PLAY</div>
     
     <div style={{ background: 'rgba(20,0,0,0.8)', padding: '30px 50px', borderRadius: '15px', border: '1px solid var(--color-gold)', textAlign: 'center', boxShadow: '0 0 30px rgba(212,175,55,0.2)' }}>
       <div style={{ fontSize: '1.5rem', color: '#ccc', marginBottom: '15px' }}>{myProfile.display_name}</div>
@@ -9504,7 +9511,7 @@
 {multiplayerMode === 'cpu_lobby' && (
   <>
   <div className="fullscreen-lobby-container">
-    <div style={{position: 'absolute', top: '15vh', color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>CPU PLAY</div>
+    <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>CPU PLAY</div>
     
     <div style={{ background: 'rgba(20,0,0,0.8)', padding: '30px 50px', borderRadius: '15px', border: '1px solid var(--color-gold)', textAlign: 'center', boxShadow: '0 0 30px rgba(212,175,55,0.2)' }}>
       <div style={{ fontSize: '1.5rem', color: '#ccc', marginBottom: '15px' }}>{myProfile.display_name}</div>
@@ -9533,9 +9540,9 @@
 {multiplayerMode === 'select' && (
                 <>
                 <div className="fullscreen-lobby-container">
-                  <div style={{position: 'absolute', top: '15vh', color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>PRIVATE MATCH</div>
+                  <div style={{color: 'var(--color-gold)', fontFamily: "'Cinzel', 'Noto Serif JP', serif", fontSize: '2.5rem', letterSpacing: '4px', marginBottom: '30px', textShadow: '0 0 20px rgba(0,0,0,1)'}}>PRIVATE MATCH</div>
                   {isMobile ? (
-                    <div className="mode-select-carousel animate-fade-in"
+                    <div className="mode-select-carousel lobby-carousel animate-fade-in"
                          onTouchStart={handlePrivateTouchStart}
                          onTouchMove={handlePrivateTouchMove}
                          onTouchEnd={handlePrivateTouchEnd}>
