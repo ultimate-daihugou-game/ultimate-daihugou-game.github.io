@@ -324,6 +324,15 @@
         --card-height: 50px;
       }
 
+      .altar-container.coffin-container {
+        top: auto !important;
+        left: auto !important;
+        bottom: 120px !important;
+        right: 10px !important;
+        transform: scale(0.5) !important;
+        transform-origin: bottom right;
+      }
+
       .btn-start-game {
         width: 260px;
         font-size: 0.95rem;
@@ -4694,46 +4703,58 @@
         font-size: 0.9rem !important;
       }
 
-      /* CPU Player Positioning */
+      /* CPU Player Positioning (Compact UI with decorative cards) */
       .player-area.player-1,
       .player-area.player-2,
       .player-area.player-3 {
         transform: none !important;
-      }
-      .player-pos.pos-top .card,
-      .player-pos.pos-left .card,
-      .player-pos.pos-right .card {
-        width: 35px !important;
-        height: 50px !important;
-        top: 0 !important;
+        width: auto !important;
+        height: auto !important;
       }
       .player-pos.pos-left {
-        left: 165px !important;
+        left: 20px !important;
         right: auto !important;
-        top: 50% !important;
-        transform: translateY(-50%) rotate(90deg) scale(0.75) !important;
+        top: 30% !important;
+        transform: translateY(-50%) !important;
         overflow: visible !important;
       }
       .player-pos.pos-right {
         left: auto !important;
-        right: 165px !important;
-        top: 50% !important;
-        transform: translateY(-50%) rotate(-90deg) scale(0.75) !important;
+        right: 20px !important;
+        top: 30% !important;
+        transform: translateY(-50%) !important;
         overflow: visible !important;
       }
       .player-pos.pos-top {
-        left: 50vw !important;
-        top: 90px !important;
-        transform: translateX(-50%) rotate(180deg) scale(0.75) !important;
+        left: 50% !important;
+        top: 60px !important;
+        transform: translateX(-50%) !important;
         overflow: visible !important;
         z-index: 10 !important;
+      }
+      .player-center-info {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 5px;
+        border-radius: 8px;
+        border: 1px solid var(--color-gold);
+      }
+      .player-area.player-0 .player-center-info {
+        position: absolute !important;
+        bottom: 120px !important;
+        left: 10px !important;
+        top: auto !important;
+        right: auto !important;
       }
 
       /* Centered & Elevated Field Layout (RESTORE ROTATION) */
       .play-area {
         width: 280px !important;
         height: 280px !important;
-        top: 45.5% !important; /* 42%から少し下げてサークル位置に合わせる */
+        top: 50% !important; /* 42%から少し下げてサークル位置に合わせる */
         left: 50% !important;
         transform: translate(-50%, -50%) !important;
         z-index: 150 !important;
@@ -4741,7 +4762,7 @@
         box-shadow: none !important;
       }
       .bg-reverse-indicator {
-        top: 45.5% !important; /* 42%から少し下げる */
+        top: 50% !important; /* 42%から少し下げる */
         left: 50% !important;
         width: 38vh !important;
         height: 38vh !important;
@@ -6088,6 +6109,93 @@
     @keyframes pulse-urgent-gauge {
       from { box-shadow: 0 0 2px rgba(255,51,51,0.5); }
       to { box-shadow: 0 0 10px rgba(255,51,51,1); }
+    }
+    @media (max-width: 768px) {
+      .player-area.player-1,
+      .player-area.player-2,
+      .player-area.player-3 {
+        transform: none !important;
+        width: auto !important;
+        height: auto !important;
+      }
+      .player-pos.pos-left {
+        left: 20px !important;
+        right: auto !important;
+        top: 30% !important;
+        transform: translateY(-50%) !important;
+        overflow: visible !important;
+      }
+      .player-pos.pos-right {
+        left: auto !important;
+        right: 20px !important;
+        top: 30% !important;
+        transform: translateY(-50%) !important;
+        overflow: visible !important;
+      }
+      .player-pos.pos-top {
+        left: 50% !important;
+        top: 60px !important;
+        transform: translateX(-50%) !important;
+        overflow: visible !important;
+        z-index: 10 !important;
+      }
+      .player-center-info {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 5px;
+        border-radius: 8px;
+        border: 1px solid var(--color-gold);
+      }
+      .player-area.player-0 .player-center-info {
+        position: absolute !important;
+        bottom: 120px !important;
+        left: 10px !important;
+        top: auto !important;
+        right: auto !important;
+      }
+      .altar-container.coffin-container {
+        top: auto !important;
+        left: auto !important;
+        bottom: 120px !important;
+        right: 10px !important;
+        transform: scale(0.5) !important;
+        transform-origin: bottom right;
+      }
+      .cpu-decorative-cards {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 60px;
+        z-index: -1;
+      }
+      .cpu-decorative-card {
+        position: absolute;
+        width: 40px;
+        height: 60px;
+        background-image: url('card back.png');
+        background-size: cover;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      }
+      .btn-exit-to-title {
+        top: 5px !important;
+        right: 5px !important;
+        left: auto !important;
+        transform: scale(0.7) !important;
+        transform-origin: top right;
+      }
+      .btn-fast-forward {
+        top: 5px !important;
+        right: 80px !important;
+        left: auto !important;
+        transform: scale(0.7) !important;
+        transform-origin: top right;
+      }
     }
   </style>
   <script src="ads.js"></script>
@@ -8796,7 +8904,8 @@
             {explodingCards.find(ec => ec.playerIndex === playerIdx) && (
               <div className="exploding-card" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '200px', height: '200px', background: 'radial-gradient(circle, #f00, transparent)', borderRadius: '50%', zIndex: 600 }}></div>
             )}
-            {handContent.map((c, i) => {
+            {!(isMobile && playerIdx !== myPlayerIndex && !isBeingWatchedByMe) ? (
+              handContent.map((c, i) => {
               const rot = startAngle + i * angleStep;
               const trY = Math.abs(rot) * 0.8;
               const isSelected = selectedCards.find(sc => sc.id === c.id);
@@ -8817,10 +8926,9 @@
                 
                 if (isMobile && (playerIdx === 0 || isBeingWatchedByMe)) {
                   // 監視中または自分の手札：画面幅を広く使って視認性を確保
-                  const maxLocalWidth = (playerIdx === 0 || isBeingWatchedByMe) ? window.innerWidth * 0.95 : (isMobile ? 180 : 300); 
-                  const cardWidth = (isMobile && playerIdx === 0) ? 85 : 65; 
-                  // 監視中は大幅に広げる (cap: 50)
-                  const cap = isBeingWatchedByMe ? 50 : 30;
+                  const maxLocalWidth = (playerIdx === myPlayerIndex || isBeingWatchedByMe) ? window.innerWidth * 0.95 : (isMobile ? 180 : 300); 
+                  const cardWidth = (isMobile && playerIdx === myPlayerIndex) ? 85 : 65; 
+                  const cap = isBeingWatchedByMe ? 50 : 45;
                   const spacing = Math.min(cap, (maxLocalWidth - cardWidth) / Math.max(1, total - 1));
                   const offset = (i - (total - 1) / 2) * spacing;
                   
@@ -8883,7 +8991,14 @@
                   ></div>
                 );
               }
-            })}
+            })
+            ) : (
+              <div className="cpu-decorative-cards">
+                <div className="cpu-decorative-card" style={{ transform: 'rotate(-15deg)', left: '15px' }}></div>
+                <div className="cpu-decorative-card" style={{ transform: 'rotate(0deg)', left: '30px' }}></div>
+                <div className="cpu-decorative-card" style={{ transform: 'rotate(15deg)', left: '45px' }}></div>
+              </div>
+            )}
 
             {passedPlayers.includes(playerIdx) && (
               <div className="player-pass-wrapper">
