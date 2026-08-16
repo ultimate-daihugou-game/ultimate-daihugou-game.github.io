@@ -6141,6 +6141,7 @@
       .player-pos.pos-bottom {
         bottom: 210px !important;
         left: 55% !important; /* Shift right slightly to reveal leftmost card */
+        z-index: 2000 !important; /* Ensure hand renders in front of avatar */
       }
       .player-center-info .player-avatar-icon {
         width: 64px !important;
@@ -6159,7 +6160,7 @@
         border: none !important;
       }
       .player-you-info-fixed {
-        bottom: 415px !important;
+        bottom: 400px !important;
         left: 10px !important;
         transform: scale(0.85) !important;
         transform-origin: bottom left;
