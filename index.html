@@ -1329,13 +1329,7 @@
         -webkit-text-stroke: 0 !important;
       }
       .effect-4-shield {
-        width: 90vw !important; /* 少し幅を狭める */
-        height: 46vh !important;
-        top: 50% !important;
-        border: 15px double rgba(0, 180, 216, 0.7) !important;
-        border-radius: 12px !important;
-        background: rgba(0, 180, 216, 0.05) !important;
-        box-shadow: 0 0 40px #00b4d8 !important;
+        display: none !important; /* スマホ版のみ排除 */
       }
       .bomber-explode {
         top: 30% !important;
@@ -7869,34 +7863,36 @@
               } else {
                 const passCount = Math.min(count, h[playerIndex].length);
                 let passed = [];
-                for (let i = 0; i < passCount; i++) {
-                  const cIndex = Math.floor(Math.random() * h[playerIndex].length);
-                  const card = h[playerIndex].splice(cIndex, 1)[0];
-                  passed.push(card);
+                // カットイン終了を待ってからカードを移動させる
+                setTimeout(() => {
+                  for (let i = 0; i < passCount; i++) {
+                    const cIndex = Math.floor(Math.random() * h[playerIndex].length);
+                    const card = h[playerIndex].splice(cIndex, 1)[0];
+                    passed.push(card);
 
-                  // 7渡し：裏向きで移動させる
-                  const newFly = { from: playerIndex, to: nextP, card: { ...card, rank: '?' }, type: 'pass', id: Math.random(), delay: i * 0.5 };
-                  setFlyingCards(prev => [...prev, newFly]);
-                  setIsAnimating(true);
-                  setTimeout(() => {
-                    setFlyingCards(prev => prev.filter(f => f.id !== newFly.id));
-                    h[nextP].push(card);
-                    if (nextP === 0) {
-                      setHighlightedCardIds(prev => [...prev, card.id]);
-                      setTimeout(() => setHighlightedCardIds(prev => prev.filter(id => id !== card.id)), 4000);
-                    }
-                    setHands([...h]);
-                    sm.playPaperSE();
-                    setReceivedHighlight(nextP);
+                    // 7渡し：裏向きで移動させる
+                    const newFly = { from: playerIndex, to: nextP, card: { ...card, rank: '?' }, type: 'pass', id: Math.random(), delay: i * 0.5 };
+                    setFlyingCards(prev => [...prev, newFly]);
+                    setIsAnimating(true);
                     setTimeout(() => {
-                      setReceivedHighlight(null);
-                      setIsAnimating(false);
-                      // 7渡しによる次手番への影響を最小限に（async終了後executeNextTurnが走る）
-                    }, 1500);
-                  }, 2000 + i * 500);
-                }
+                      setFlyingCards(prev => prev.filter(f => f.id !== newFly.id));
+                      h[nextP].push(card);
+                      if (nextP === 0) {
+                        setHighlightedCardIds(prev => [...prev, card.id]);
+                        setTimeout(() => setHighlightedCardIds(prev => prev.filter(id => id !== card.id)), 4000);
+                      }
+                      setHands([...h]);
+                      sm.playPaperSE();
+                      setReceivedHighlight(nextP);
+                      setTimeout(() => {
+                        setReceivedHighlight(null);
+                        setIsAnimating(false);
+                      }, 1500);
+                    }, 500 + i * 500); // 1800ms待機済みなので500ms短縮
+                  }
+                }, 1800);
+                
                 isAsync = true; // Mark as async
-                isAsync = true;
                 steps = 1; // 7の後、次は順当に次の人
               }
             }
