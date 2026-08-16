@@ -10212,9 +10212,10 @@
                 
                 const uniqueRanks = Array.from(new Set(centralBombCards.map(c => c.rank)));
                 const containerWidth = isMobile ? '90vw' : (count <= 8 ? '500px' : '950px');
+                const topPos = isMobile ? '30%' : '50%';
 
                 return (
-                  <div style={{ position: 'fixed', top: '50%', left: '50%', transform: `translate(-50%, -50%) scale(${scaleFactor})`, zIndex: 3000, display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', width: containerWidth, pointerEvents: 'none' }}>
+                  <div style={{ position: 'fixed', top: topPos, left: '50%', transform: `translate(-50%, -50%) scale(${scaleFactor})`, zIndex: 3000, display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', width: containerWidth, pointerEvents: 'none' }}>
                     <div style={{ width: '100%', textAlign: 'center', marginBottom: '15px', color: '#fff', fontSize: '2.5rem', fontWeight: 'bold', fontFamily: '"Cinzel", serif', textShadow: '0 0 10px #f00, 0 0 20px #ff0', animation: 'bomb-cutin-text 3.2s forwards' }}>
                        消滅: {uniqueRanks.join(', ')}
                     </div>
