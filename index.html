@@ -10202,7 +10202,7 @@
                 if (gyEl) {
                   const rect = gyEl.getBoundingClientRect();
                   gyX = rect.left + rect.width / 2;
-                  gyY = rect.top + rect.height / 2;
+                  gyY = rect.top + rect.height / 2 - 30; // 少し上に調整
                 }
 
                 // 吸い込み相対座標をpxで決定
@@ -10249,7 +10249,7 @@
                 
                 const uniqueRanks = Array.from(new Set(centralBombCards.map(c => c.rank)));
                 const containerWidth = isMobile ? '90vw' : (count <= 8 ? '500px' : '950px');
-                const topPos = isMobile ? '30%' : '50%';
+                const topPos = '50%';
 
                 return (
                   <div style={{ position: 'fixed', top: topPos, left: '50%', transform: `translate(-50%, -50%) scale(${scaleFactor})`, zIndex: 3000, display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', width: containerWidth, pointerEvents: 'none' }}>
