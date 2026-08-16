@@ -6138,7 +6138,7 @@
         z-index: 10 !important;
       }
       .player-pos.pos-bottom {
-        bottom: 170px !important;
+        bottom: 190px !important;
       }
       .player-center-info .player-avatar-icon {
         width: 64px !important;
@@ -6157,7 +6157,7 @@
         border: none !important;
       }
       .player-you-info-fixed {
-        bottom: 360px !important;
+        bottom: 380px !important;
         left: 10px !important;
         transform: scale(0.85) !important;
         transform-origin: bottom left;
@@ -6175,10 +6175,22 @@
       .altar-container {
         top: auto !important;
         left: auto !important;
-        bottom: 335px !important;
+        bottom: 355px !important;
         right: 15px !important;
         transform: scale(0.65) !important;
         transform-origin: bottom right;
+      }
+      .action-panel {
+        position: absolute !important;
+        bottom: 110px !important;
+        left: 50% !important;
+        transform: translateX(-50%) scale(0.9) !important;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        gap: 20px !important;
+        flex-direction: row !important;
+        z-index: 1000 !important;
       }
       /* Centered & Elevated Field Layout */
       .play-area {
@@ -9547,7 +9559,6 @@
                             <img src="online.png" alt="Online Play" className="mode-image-button" onClick={() => { setMultiplayerMode('online'); setOnlineMatchStatus('idle'); }} />
                             <div className="mode-description-inline visible">全国のプレイヤーとレートを競う<br/>オンライン対戦</div>
                           </div>
-                          
                           {/* Item 1: Multi */}
                           <div className="carousel-item">
                             <img src="mulch.png" alt="Multi Play" className="mode-image-button" onClick={() => setMultiplayerMode('select')} />
@@ -9811,6 +9822,8 @@
                   ? remotePlayers.every((rp, i) => (rp && rp.id && rp.id.startsWith('cpu')) || ranksDiscovered.includes(i)) && ranksDiscovered.includes(myPlayerIndex)
                   : ranksDiscovered.includes(myPlayerIndex);
                 
+                if (!allHumansFinished) return null;
+
                 return (
                   <button className="btn-fast-forward" style={{ 
                     position: 'absolute', top: '135px', left: '110px', zIndex: 10000,
