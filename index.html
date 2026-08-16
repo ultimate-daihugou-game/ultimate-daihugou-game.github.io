@@ -10157,13 +10157,19 @@
                 else if (from === 2) { startX = '50vw'; startY = isMobile ? '0px' : '150px'; }
                 else if (from === 3) { startX = isMobile ? 'calc(100vw - 20px)' : 'calc(100vw - 270px)'; startY = '50vh'; }
 
-                // 墓地の絶対座標
-                const targetX = isMobile ? 'calc(100vw - 20px)' : 'calc(100vw - 355px)';
-                const targetY = isMobile ? 'calc(100vh - 355px)' : '130px';
+                // 墓地の絶対座標をDOMから動的に取得
+                let gyX = isMobile ? 'calc(100vw - 20px)' : 'calc(100vw - 355px)';
+                let gyY = isMobile ? 'calc(100vh - 355px)' : '130px';
+                const gyEl = document.querySelector('[data-graveyard]');
+                if (gyEl) {
+                  const rect = gyEl.getBoundingClientRect();
+                  gyX = (rect.left + rect.width / 2) + 'px';
+                  gyY = (rect.top + rect.height / 2) + 'px';
+                }
 
                 // 吸い込み相対座標の決定
-                let altarX = `calc(${targetX} - (${startX}))`;
-                let altarY = `calc(${targetY} - (${startY}))`;
+                let altarX = `calc(${gyX} - (${startX}))`;
+                let altarY = `calc(${gyY} - (${startY}))`;
                 
                 const delay = idx * 0.12;
                 const isFaceDown = from !== 'center';
