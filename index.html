@@ -6168,7 +6168,7 @@
       .player-area.player-0 .player-center-info,
       .pos-bottom .player-center-info {
         position: absolute !important;
-        bottom: 395px !important;
+        bottom: 415px !important;
         left: 10px !important;
         top: auto !important;
         right: auto !important;
@@ -6178,7 +6178,7 @@
         top: auto !important;
         left: auto !important;
         bottom: 355px !important;
-        right: 15px !important;
+        right: 5px !important;
         transform: scale(0.65) !important;
         transform-origin: bottom right;
       }
@@ -10081,7 +10081,7 @@
               )}
 
               {/* ターンと方向表示 */}
-              <div style={{ position: 'absolute', top: isMobile ? '2px' : '30px', left: isMobile ? '2px' : '40px', zIndex: 200, color: '#ccc', fontFamily: "'Cinzel', serif", transform: isMobile ? 'scale(0.45)' : 'none', transformOrigin: 'top left', whiteSpace: 'nowrap' }}>
+              <div style={{ display: isMobile ? 'none' : 'block', position: 'absolute', top: '30px', left: '40px', zIndex: 200, color: '#ccc', fontFamily: "'Cinzel', serif", whiteSpace: 'nowrap' }}>
                 TURN: <span style={{ color: turn === myPlayerIndex ? 'var(--color-blood)' : '#fff' }}>{turn === myPlayerIndex ? 'YOU' : turn === -1 ? 'ENDED' : (remotePlayers[turn]?.name || `CPU ${turn}`)}</span>
                 {(is11Back || isRevolution) && (
                   <span className="revolution-label" style={{ marginLeft: '15px', color: '#ff4444', fontWeight: 'bold', textShadow: '0 0 10px rgba(255,0,0,0.8)', fontSize: '0.9em' }}>
