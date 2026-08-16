@@ -356,6 +356,7 @@
 
       .table-container {
         transform: scale(0.95);
+        overflow: hidden !important;
       }
 
       .field-area {
@@ -1331,10 +1332,14 @@
       .effect-4-shield {
         width: 90vw !important; /* 少し幅を狭める */
         height: 46vh !important;
+        top: 30% !important;
         border: 15px double rgba(0, 180, 216, 0.7) !important;
         border-radius: 12px !important;
         background: rgba(0, 180, 216, 0.05) !important;
         box-shadow: 0 0 40px #00b4d8 !important;
+      }
+      .bomber-explode {
+        top: 30% !important;
       }
     }
 
@@ -4800,10 +4805,10 @@
       }
       .cutin-card-popup {
         width: auto !important;
-        height: 35vh !important;
+        height: 25vh !important;
         aspect-ratio: 95 / 135 !important;
         overflow: hidden !important;
-        margin-top: -30vh !important;
+        margin-top: -25vh !important;
       }
       .cutin-card-rank {
         width: 20px !important;
