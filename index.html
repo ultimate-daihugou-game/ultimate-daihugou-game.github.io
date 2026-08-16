@@ -10209,6 +10209,7 @@
                 
                 const startX = sX + 'px';
                 const startY = sY + 'px';
+                const delay = idx * 0.12;
                 const isFaceDown = from !== 'center';
                 return (
                   <div key={`flying-${idx}`} className={`card ${isFaceDown ? 'back' : (c.suit === '♥' || c.suit === '♦' ? 'red' : '')} to-graveyard`}
