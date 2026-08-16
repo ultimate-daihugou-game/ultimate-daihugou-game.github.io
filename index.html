@@ -6168,7 +6168,7 @@
         border: none !important;
       }
       .player-you-info-fixed {
-        bottom: 270px !important;
+        bottom: 255px !important;
         left: 10px !important;
         transform: scale(0.85) !important;
         transform-origin: bottom left;
@@ -8163,10 +8163,10 @@
              tgtLeft = idx === 0 ? 'calc(50% - 65px)' : 'calc(50% + 65px)';
              tgtTop = '50%';
           } else {
-             tgtLeft = `calc(50% + ${Math.random() * 60 - 30}px)`;
-             tgtTop = `calc(50% + ${Math.random() * 60 - 30}px)`;
+             tgtLeft = `calc(50% + ${Math.random() * 30 - 15}px)`;
+             tgtTop = `calc(50% + ${Math.random() * 30 - 15}px)`;
           }
-          const tgtTransform = isPlus5Combo ? `translate(-50%, -50%) scale(0.8) rotate(0deg)` : `translate(-50%, -50%) rotate(${Math.random() * 45 - 22}deg)`;
+          const tgtTransform = isPlus5Combo ? `translate(-50%, -50%) scale(0.8) rotate(0deg)` : `translate(-50%, -50%) rotate(${Math.random() * 20 - 10}deg)`;
 
           return {
             card: c, isAnimating: true, isSlammed: false,
@@ -10150,29 +10150,20 @@
                 const c = item.card;
                 const from = item.fromPlayer;
                 
-                // スタート地点と墓地への吸い込み相対座標の決定
-                let startX = '50vw';
-                let startY = '50vh';
-                let altarX = 'calc(50vw - 355px)';
-                let altarY = 'calc(130px - 50vh)';
-                
-                if (from === 0) {
-                  // 自分（画面下部）から
-                  startX = '50vw'; startY = '90vh';
-                  altarX = 'calc(50vw - 355px)'; altarY = 'calc(130px - 90vh)';
-                } else if (from === 1) {
-                  // CPU1（画面左）から
-                  startX = '270px'; startY = '50vh';
-                  altarX = 'calc(100vw - 625px)'; altarY = 'calc(130px - 50vh)';
-                } else if (from === 2) {
-                  // CPU2（画面上）から
-                  startX = '50vw'; startY = '150px';
-                  altarX = 'calc(50vw - 355px)'; altarY = '-20px';
-                } else if (from === 3) {
-                  // CPU3（画面右）から
-                  startX = 'calc(100vw - 270px)'; startY = '50vh';
-                  altarX = '-85px'; altarY = 'calc(130px - 50vh)';
-                }
+                // スタート地点の決定
+                let startX = '50vw'; let startY = '50vh';
+                if (from === 0) { startX = '50vw'; startY = '90vh'; }
+                else if (from === 1) { startX = isMobile ? '20px' : '270px'; startY = '50vh'; }
+                else if (from === 2) { startX = '50vw'; startY = isMobile ? '0px' : '150px'; }
+                else if (from === 3) { startX = isMobile ? 'calc(100vw - 20px)' : 'calc(100vw - 270px)'; startY = '50vh'; }
+
+                // 墓地の絶対座標
+                const targetX = isMobile ? 'calc(100vw - 20px)' : 'calc(100vw - 355px)';
+                const targetY = isMobile ? 'calc(100vh - 355px)' : '130px';
+
+                // 吸い込み相対座標の決定
+                let altarX = `calc(${targetX} - (${startX}))`;
+                let altarY = `calc(${targetY} - (${startY}))`;
                 
                 const delay = idx * 0.12;
                 const isFaceDown = from !== 'center';
