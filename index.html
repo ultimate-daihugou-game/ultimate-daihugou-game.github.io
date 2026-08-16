@@ -9917,8 +9917,42 @@
               {/* Flying Cards Animation Layer */}
           {abilityLog && <div className="ability-log-overlay">{abilityLog}</div>}
               {flyingCards.map(fc => {
-                const start = fc.from === 'graveyard' ? { top: '50%', left: '85%' } : fc.from === 'deck' ? { top: '50%', left: '50%' } : getPlayerEdgePosition(fc.from);
-                const end = getPlayerEdgePosition(fc.to);
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                
+                // Start position
+                let startX = w / 2; let startY = h / 2;
+                if (fc.from === 'graveyard') { startX = w * 0.85; startY = h / 2; }
+                else if (fc.from === 'deck') { startX = w / 2; startY = h / 2; }
+                else {
+                  const sourceIcon = document.getElementById(`avatar-${fc.from}`);
+                  if (sourceIcon) {
+                    const rect = sourceIcon.getBoundingClientRect();
+                    startX = rect.left + rect.width / 2;
+                    startY = rect.top + rect.height / 2;
+                  } else {
+                    const edge = getPlayerEdgePosition(fc.from);
+                    startX = edge.left.includes('vw') || edge.left.includes('%') ? w/2 : parseInt(edge.left) || w/2;
+                    startY = edge.top.includes('vh') || edge.top.includes('%') ? h/2 : parseInt(edge.top) || h/2;
+                  }
+                }
+
+                // End position
+                let endX = w / 2; let endY = h / 2;
+                const targetIcon = document.getElementById(`avatar-${fc.to}`);
+                if (targetIcon) {
+                  const rect = targetIcon.getBoundingClientRect();
+                  endX = rect.left + rect.width / 2;
+                  endY = rect.top + rect.height / 2;
+                } else {
+                  const edge = getPlayerEdgePosition(fc.to);
+                  endX = edge.left.includes('vw') || edge.left.includes('%') ? w/2 : parseInt(edge.left) || w/2;
+                  endY = edge.top.includes('vh') || edge.top.includes('%') ? h/2 : parseInt(edge.top) || h/2;
+                }
+                
+                const start = { top: startY + 'px', left: startX + 'px' };
+                const end = { top: endY + 'px', left: endX + 'px' };
+                
                 const isDeal = fc.type === 'deal';
                 const isShieldRepel = fc.type === 'shield-repel';
                 const animName = isShieldRepel ? 'shield-repel-fly' : 'card-fly-back';
@@ -10150,28 +10184,31 @@
                 const c = item.card;
                 const from = item.fromPlayer;
                 
-                // スタート地点の決定
-                let startX = '50vw'; let startY = '50vh';
-                if (from === 0) { startX = '50vw'; startY = '90vh'; }
-                else if (from === 1) { startX = isMobile ? '20px' : '270px'; startY = '50vh'; }
-                else if (from === 2) { startX = '50vw'; startY = isMobile ? '0px' : '150px'; }
-                else if (from === 3) { startX = isMobile ? 'calc(100vw - 20px)' : 'calc(100vw - 270px)'; startY = '50vh'; }
+                // スタート地点を完全なpxで決定
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                let sX = w / 2; let sY = h / 2;
+                if (from === 0) { sX = w / 2; sY = h * 0.9; }
+                else if (from === 1) { sX = isMobile ? 20 : 270; sY = h / 2; }
+                else if (from === 2) { sX = w / 2; sY = isMobile ? 0 : 150; }
+                else if (from === 3) { sX = isMobile ? w - 20 : w - 270; sY = h / 2; }
 
                 // 墓地の絶対座標をDOMから動的に取得
-                let gyX = isMobile ? 'calc(100vw - 20px)' : 'calc(100vw - 355px)';
-                let gyY = isMobile ? 'calc(100vh - 355px)' : '130px';
+                let gyX = isMobile ? w - 20 : w - 355;
+                let gyY = isMobile ? h - 355 : 130;
                 const gyEl = document.querySelector('[data-graveyard]');
                 if (gyEl) {
                   const rect = gyEl.getBoundingClientRect();
-                  gyX = (rect.left + rect.width / 2) + 'px';
-                  gyY = (rect.top + rect.height / 2) + 'px';
+                  gyX = rect.left + rect.width / 2;
+                  gyY = rect.top + rect.height / 2;
                 }
 
-                // 吸い込み相対座標の決定
-                let altarX = `calc(${gyX} - (${startX}))`;
-                let altarY = `calc(${gyY} - (${startY}))`;
+                // 吸い込み相対座標をpxで決定
+                let altarX = (gyX - sX) + 'px';
+                let altarY = (gyY - sY) + 'px';
                 
-                const delay = idx * 0.12;
+                const startX = sX + 'px';
+                const startY = sY + 'px';
                 const isFaceDown = from !== 'center';
                 return (
                   <div key={`flying-${idx}`} className={`card ${isFaceDown ? 'back' : (c.suit === '♥' || c.suit === '♦' ? 'red' : '')} to-graveyard`}
