@@ -4805,10 +4805,10 @@
       }
       .cutin-card-popup {
         width: auto !important;
-        height: 25vh !important;
+        height: 35vh !important;
         aspect-ratio: 95 / 135 !important;
         overflow: hidden !important;
-        margin-top: -25vh !important;
+        margin-top: -30vh !important;
       }
       .cutin-card-rank {
         width: 20px !important;
@@ -10206,8 +10206,12 @@
                 else if (count <= 16) scaleFactor = 0.9;
                 else scaleFactor = 0.6;
                 
+                if (isMobile) {
+                  scaleFactor *= 0.5; // Scale down for mobile screens to fit 
+                }
+                
                 const uniqueRanks = Array.from(new Set(centralBombCards.map(c => c.rank)));
-                const containerWidth = count <= 8 ? '500px' : '950px';
+                const containerWidth = isMobile ? '90vw' : (count <= 8 ? '500px' : '950px');
 
                 return (
                   <div style={{ position: 'fixed', top: '50%', left: '50%', transform: `translate(-50%, -50%) scale(${scaleFactor})`, zIndex: 3000, display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', width: containerWidth, pointerEvents: 'none' }}>
