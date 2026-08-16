@@ -430,7 +430,7 @@
     .pos-top .player-pass-wrapper { top: 75px; transform: translate(-50%, -50%); z-index: 2000; }
     .pos-left .player-pass-wrapper { top: 85px; transform: translate(-50%, -50%); z-index: 2000; }
     .pos-right .player-pass-wrapper { top: 85px; transform: translate(-50%, -50%); z-index: 2000; }
-    .pos-bottom .player-pass-wrapper { top: 50%; transform: translate(-50%, -50%); z-index: 2000; }
+    .pos-bottom .player-pass-wrapper { top: 40%; transform: translate(calc(-50% + 20px), -50%); z-index: 2000; }
     .pos-bottom .player-pass-label { font-size: 3.5rem; padding: 15px 40px; }
 
     .player-pass-label {
@@ -4704,7 +4704,8 @@
       .pos-left .player-pass-wrapper { top: 85px !important; transform: translate(-50%, -50%) !important; }
       .pos-right .player-pass-wrapper { top: 85px !important; transform: translate(-50%, -50%) !important; }
       .pos-bottom .player-pass-wrapper {
-        transform: translate(calc(-50% + 45px), -50%) !important;
+        top: 40% !important;
+        transform: translate(calc(-50% + 60px), -50%) !important;
       }
       .pos-bottom .player-pass-label {
         font-size: 2.2rem !important;
@@ -9078,33 +9079,32 @@
               </div>
             )}
 
-            {passedPlayers.includes(playerIdx) && (
-              <div className="player-pass-wrapper">
-                <div className="player-pass-label">PASS</div>
-              </div>
-            )}
-
             {playerIdx !== myPlayerIndex ? (
-              <div className="player-center-info" style={{ filter: passedPlayers.includes(playerIdx) ? 'brightness(0.3)' : 'none' }}>
+              <div className="player-center-info">
+                {passedPlayers.includes(playerIdx) && (
+                  <div className="player-pass-wrapper" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)', position: 'absolute', zIndex: 3000 }}>
+                    <div className="player-pass-label">PASS</div>
+                  </div>
+                )}
                 {watchTarget && watchTarget.activatorIndex === playerIdx && playerIdx !== myPlayerIndex && (
                   <div className="watch-activator-label">監視中</div>
                 )}
                 
                 {/* ターンタイマーゲージ (オンライン対戦かつ進行中のみ。CPUは非表示) */}
                 {multiplayerMode === 'active' && turn === playerIdx && !(remotePlayers[playerIdx] && remotePlayers[playerIdx].id && remotePlayers[playerIdx].id.startsWith('cpu')) && gameStarted && !isGameOver && !isAnimating && !watchTarget && !watchSelecting && (
-                  <div className="turn-timer-gauge-container">
+                  <div className="turn-timer-gauge-container" style={{ filter: passedPlayers.includes(playerIdx) ? 'brightness(0.3)' : 'none' }}>
                     <div className={`turn-timer-gauge-bar ${turnTimeLeft <= 5 ? 'urgent' : ''}`} style={{ width: `${(turnTimeLeft / 15) * 100}%` }}></div>
                   </div>
                 )}
 
                 {/* 手札枚数はアイコンの上部に配置 */}
-                <div className="hand-count-badge">{hands[playerIdx].length}</div>
+                <div className="hand-count-badge" style={{ filter: passedPlayers.includes(playerIdx) ? 'brightness(0.3)' : 'none' }}>{hands[playerIdx].length}</div>
                 {/* アバターアイコン */}
-                <div id={`avatar-${playerIdx}`} className={`player-avatar-icon ${hierarchy ? hierarchy.cls : ''}`} style={getAvatarStyle(getPlayerAvatar(playerIdx))}>
+                <div id={`avatar-${playerIdx}`} className={`player-avatar-icon ${hierarchy ? hierarchy.cls : ''}`} style={{ ...getAvatarStyle(getPlayerAvatar(playerIdx)), filter: passedPlayers.includes(playerIdx) ? 'brightness(0.3)' : 'none' }}>
                   {settledTurn === playerIdx && <div className="active-turn-ring-local"></div>}
                 </div>
                 {/* 名前はアイコンの下部に配置 */}
-                <div className="player-status">
+                <div className="player-status" style={{ filter: passedPlayers.includes(playerIdx) ? 'brightness(0.3)' : 'none' }}>
                   {playerIdx === myPlayerIndex ? 'YOU' : (remotePlayers[playerIdx]?.name || `CPU ${playerIdx}`)}
                   {hierarchy && <span className={`rank-badge ${hierarchy.cls}`}>{hierarchy.title}</span>}
                 </div>
