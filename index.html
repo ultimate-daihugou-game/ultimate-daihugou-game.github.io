@@ -6182,14 +6182,19 @@
       }
       .action-panel {
         position: absolute !important;
-        bottom: 80px !important;
+        bottom: 100px !important;
         left: 50% !important;
-        transform: translateX(-50%) scale(0.9) !important;
+        transform: translateX(-50%) translateZ(1000px) !important;
         display: flex !important;
         flex-direction: row !important;
         gap: 20px !important;
-        z-index: 999999 !important;
+        z-index: 99999999 !important;
         pointer-events: auto !important;
+      }
+      .action-panel .action-btn {
+        position: relative !important;
+        z-index: 99999999 !important;
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.8) !important;
       }
       /* Centered & Elevated Field Layout */
       .play-area {
