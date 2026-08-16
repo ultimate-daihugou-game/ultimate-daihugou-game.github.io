@@ -9110,7 +9110,11 @@
                 </div>
               </div>
             ) : (
-              null
+              passedPlayers.includes(playerIdx) && (
+                <div className="player-pass-wrapper">
+                  <div className="player-pass-label">PASS</div>
+                </div>
+              )
             )}
           </div>
         );
