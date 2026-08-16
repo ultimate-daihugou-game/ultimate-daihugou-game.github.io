@@ -427,9 +427,9 @@
       z-index: 1500;
       pointer-events: none;
     }
-    .pos-top .player-pass-wrapper { top: 60px; transform: translate(-50%, -50%) rotate(180deg); }
-    .pos-left .player-pass-wrapper { top: 60px; transform: translate(-50%, -50%) rotate(-90deg); }
-    .pos-right .player-pass-wrapper { top: 60px; transform: translate(-50%, -50%) rotate(90deg); }
+    .pos-top .player-pass-wrapper { top: 75px; transform: translate(-50%, -50%); z-index: 2000; }
+    .pos-left .player-pass-wrapper { top: 85px; transform: translate(-50%, -50%); z-index: 2000; }
+    .pos-right .player-pass-wrapper { top: 85px; transform: translate(-50%, -50%); z-index: 2000; }
     .pos-bottom .player-pass-wrapper { top: 50%; transform: translate(-50%, -50%); z-index: 2000; }
     .pos-bottom .player-pass-label { font-size: 3.5rem; padding: 15px 40px; }
 
@@ -4700,10 +4700,11 @@
       .player-pass-label {
         font-size: 0.9rem !important;
       }
-      .pos-top .player-pass-wrapper,
-      .pos-left .player-pass-wrapper,
-      .pos-right .player-pass-wrapper {
-        transform: translate(-50%, -50%) !important;
+      .pos-top .player-pass-wrapper { top: -65px !important; transform: translate(-50%, -50%) !important; }
+      .pos-left .player-pass-wrapper { top: 85px !important; transform: translate(-50%, -50%) !important; }
+      .pos-right .player-pass-wrapper { top: 85px !important; transform: translate(-50%, -50%) !important; }
+      .pos-bottom .player-pass-wrapper {
+        transform: translate(calc(-50% + 45px), -50%) !important;
       }
       .pos-bottom .player-pass-label {
         font-size: 2.2rem !important;
