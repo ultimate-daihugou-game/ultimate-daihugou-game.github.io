@@ -3312,7 +3312,7 @@
       100% {
         top: var(--end-top);
         left: var(--end-left);
-        transform: translate(-50%, -50%) scale(var(--end-scale, 1)) rotate(360deg);
+        transform: translate(-50%, -50%) scale(var(--end-scale, 1)) rotate(var(--end-rot, 360deg));
         opacity: 0;
       }
     }
@@ -9954,9 +9954,10 @@
                 const end = { top: endY + 'px', left: endX + 'px' };
                 
                 const isDeal = fc.type === 'deal';
+                const isPass = fc.type === 'pass';
                 const isShieldRepel = fc.type === 'shield-repel';
                 const animName = isShieldRepel ? 'shield-repel-fly' : 'card-fly-back';
-                const animDuration = isShieldRepel ? '1.5s' : '0.8s';
+                const animDuration = isShieldRepel ? '1.5s' : (isPass ? '0.5s' : '0.8s');
                 return (
                   <div key={fc.id} className={`card back ${isDeal ? "deal-card-back" : "flying-card-back"}`} style={{
                     position: 'fixed',
@@ -9965,8 +9966,9 @@
                     '--start-left': start.left,
                     '--end-top': end.top,
                     '--end-left': end.left,
-                    '--start-scale': isDeal ? 1 : 0.5,
-                    '--end-scale': isDeal ? 1 : 0.8,
+                    '--start-scale': isDeal ? 1 : (isPass ? 0.35 : 0.5),
+                    '--end-scale': isDeal ? 1 : (isPass ? 0.35 : 0.8),
+                    '--end-rot': isPass ? '15deg' : '360deg',
                     animation: `${animName} ${animDuration} ${fc.delay || 0}s both cubic-bezier(0.4, 0, 0.2, 1)`
                   }}>
                   </div>
@@ -10214,7 +10216,7 @@
                 return (
                   <div key={`flying-${idx}`} className={`card ${isFaceDown ? 'back' : (c.suit === '♥' || c.suit === '♦' ? 'red' : '')} to-graveyard`}
                     style={{
-                      position: 'absolute',
+                      position: 'fixed',
                       left: startX,
                       top: startY,
                       zIndex: 2000 + idx,
