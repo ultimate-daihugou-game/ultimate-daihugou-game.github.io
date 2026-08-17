@@ -6722,7 +6722,7 @@
     const TCG_DATA = {
       'A': { name: 'サービスＡ', desc: 'このカードで場が流れた時、自身の手元に帰還', url: 'Aimage.webp', icon: '🎯', auraColor: '#2980b9' },
       '2': { name: '２ナイト', desc: '能力なし', url: '2image.webp', icon: '', auraColor: '#27ae60' },
-      '3': { name: '３コモン', desc: '3枚出し時のみ革命。それ以外は能力なし', url: '3image.webp', icon: '', auraColor: '#7f8c8d' },
+      '3': { name: '３コモン', desc: '3枚出しで革命', url: '3image.webp', icon: '', auraColor: '#7f8c8d' },
       '4': { name: '４シールド', desc: 'このターン、他プレイヤーからの攻撃を受けない', url: '4image.webp', icon: '🛡️', auraColor: '#00b4d8' },
       '5': { name: 'プラス5', desc: '他のカードと合計したランクの効果を発動', url: '5image.webp', icon: '➕', auraColor: '#ff4444' },
       '6': { name: '６フェニックス', desc: '墓地からランダムにカードを入手', url: '6image.webp', icon: '🔥', auraColor: '#8e44ad' },
@@ -7804,7 +7804,11 @@
 
         if (tcg) {
           title = tcg.name;
-          desc = tcg.desc || '';
+          if (rank === '3') {
+             desc = count === 3 ? '3枚出しで革命' : '効果なし';
+          } else {
+             desc = tcg.desc || '';
+          }
         } else if (rank === '10_NO_EFFECT') {
           title = 'プラス5'; // 「連鎖」を削除
           desc = '効果なし（ただの5の2枚出し）';
@@ -8199,7 +8203,8 @@
           effectiveVisualRank = '5_SOLO';
         }
         
-        const isRevToggle = cards.length >= 4;
+        const isThreeOf3sVisual = cards.length === 3 && effectiveVisualRank === '3';
+        const isRevToggle = cards.length >= 4 || isThreeOf3sVisual;
         if (isRevToggle) {
           let revText = effectRes.isRev ? "革命" : "反革命";
           setRevAnimMessage(revText);
