@@ -1638,9 +1638,9 @@
       content: '';
       position: absolute;
       top: 50%; left: -50%; width: 200%; height: 6px;
-      background: linear-gradient(90deg, transparent, #e74c3c, #ffffff, #e74c3c, transparent);
+      background: linear-gradient(90deg, transparent, #2ecc71, #ffffff, #2ecc71, transparent);
       transform: translateY(-50%) rotate(25deg);
-      box-shadow: 0 0 15px #e74c3c, 0 0 30px #ffffff;
+      box-shadow: 0 0 15px #2ecc71, 0 0 30px #ffffff;
       opacity: 0;
       z-index: 100;
       animation: slash-hit-anim 0.3s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
@@ -6551,6 +6551,16 @@
         }, 10);
       }
 
+      // ---- Slash (2 Night) SE ----
+      playSlashSE() {
+        const ctx = this._ensureCtx();
+        if (!ctx) return;
+        // ザクッと切れる音（高域ノイズの鋭いアタック）
+        this._noise(6000, 800, 0.5, 0.15, 'highpass');
+        // 刃の鋭い響き
+        this._osc('triangle', 2000, 200, 0.4, 0.15, 0.001);
+      }
+
       // ================================================================
       // ---- playEffectSE — 全14ランク完全書き直し ----
       // ================================================================
@@ -7865,7 +7875,7 @@
               setIsAnimating(true);
               setTimeout(() => {
                 setSlashEffectTarget(nextP);
-                if (sm.playSlamSE) sm.playSlamSE();
+                if (sm.playSlashSE) sm.playSlashSE();
                 setTimeout(() => setSlashEffectTarget(null), 600);
                 setTimeout(() => {
                   setIsAltarActive(true);
