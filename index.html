@@ -1634,6 +1634,25 @@
       animation: a-slash-strike 0.3s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
     }
 
+    .slash-hit::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: -50%; width: 200%; height: 6px;
+      background: linear-gradient(90deg, transparent, #e74c3c, #ffffff, #e74c3c, transparent);
+      transform: translateY(-50%) rotate(25deg);
+      box-shadow: 0 0 15px #e74c3c, 0 0 30px #ffffff;
+      opacity: 0;
+      z-index: 100;
+      animation: slash-hit-anim 0.3s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+      pointer-events: none;
+    }
+
+    @keyframes slash-hit-anim {
+      0% { left: -50%; opacity: 0; transform: translateY(-50%) rotate(25deg) scaleY(0.1); }
+      50% { opacity: 1; transform: translateY(-50%) rotate(25deg) scaleY(1.5); }
+      100% { left: 50%; opacity: 0; transform: translateY(-50%) rotate(25deg) scaleY(0.1); }
+    }
+
     @keyframes a-slash-strike {
       0% {
         left: -50%;
@@ -6721,7 +6740,7 @@
     // ------------------- Card Data -------------------
     const TCG_DATA = {
       'A': { name: 'サービスＡ', desc: 'このカードで場が流れた時、自身の手元に帰還', url: 'Aimage.webp', icon: '🎯', auraColor: '#2980b9' },
-      '2': { name: '２ナイト', desc: '次のプレイヤーの手札からランダムに2枚(×枚数)捨てる', url: '2image.webp', icon: '⚔️', auraColor: '#27ae60' },
+      '2': { name: '２ナイト', desc: '次のプレイヤーの手札からカードをランダムに2枚捨てる', url: '2image.webp', icon: '⚔️', auraColor: '#27ae60' },
       '3': { name: '３コモン', desc: '3枚出しで革命', url: '3image.webp', icon: '', auraColor: '#7f8c8d' },
       '4': { name: '４シールド', desc: 'このターン、他プレイヤーからの攻撃を受けない', url: '4image.webp', icon: '🛡️', auraColor: '#00b4d8' },
       '5': { name: 'プラス5', desc: '他のカードと合計したランクの効果を発動', url: '5image.webp', icon: '➕', auraColor: '#ff4444' },
@@ -6990,6 +7009,7 @@
       const [passThreadActive, setPassThreadActive] = useState(false);
       const [skipTarget, setSkipTarget] = useState(null); // CSS Chain effect
       const [missEffectTarget, setMissEffectTarget] = useState(null); // Shield sparks
+      const [slashEffectTarget, setSlashEffectTarget] = useState(null); // Slash cut on opponent
 
       const [animMessage, setAnimMessage] = useState({ data: null, state: 'exit' });
       // New state for character cut‑in overlay
@@ -7844,18 +7864,23 @@
               isAsync = true;
               setIsAnimating(true);
               setTimeout(() => {
-                setIsAltarActive(true);
-                setDiscardingToGy(dropped.map(c => ({ card: c, fromPlayer: nextP })));
+                setSlashEffectTarget(nextP);
+                if (sm.playSlamSE) sm.playSlamSE();
+                setTimeout(() => setSlashEffectTarget(null), 600);
                 setTimeout(() => {
-                  setDiscardingToGy([]);
-                  setGraveyard(prev => [...prev, ...dropped]);
-                  setGyShuffling(true);
+                  setIsAltarActive(true);
+                  setDiscardingToGy(dropped.map(c => ({ card: c, fromPlayer: nextP })));
                   setTimeout(() => {
-                    setGyShuffling(false);
-                    setIsAnimating(false);
-                    setTimeout(() => setIsAltarActive(false), 800);
-                  }, 1200);
-                }, dropCount * 120 + 800);
+                    setDiscardingToGy([]);
+                    setGraveyard(prev => [...prev, ...dropped]);
+                    setGyShuffling(true);
+                    setTimeout(() => {
+                      setGyShuffling(false);
+                      setIsAnimating(false);
+                      setTimeout(() => setIsAltarActive(false), 800);
+                    }, 1200);
+                  }, dropCount * 120 + 800);
+                }, 400);
               }, effectDelay);
               steps = 1;
             }
@@ -9071,7 +9096,7 @@
                 return (
                   <div key={c.id}
                     data-card-id={c.id}
-                    className={`${getCardClass(c)} selectable ${isSelected ? (isMobile ? 'mobile-selected' : 'selected') : ''} ${isHighlighted ? 'received-highlight' : ''} ${isPhoenixGlow ? 'phoenix-glow' : ''} ${isDealing ? 'dealing' : ''} ${isShielded[playerIdx] ? 'shielded-card' : ''} ${isShielded[playerIdx] && missEffectTarget === playerIdx ? 'shield-miss' : ''}`}
+                    className={`${getCardClass(c)} selectable ${isSelected ? (isMobile ? 'mobile-selected' : 'selected') : ''} ${isHighlighted ? 'received-highlight' : ''} ${isPhoenixGlow ? 'phoenix-glow' : ''} ${isDealing ? 'dealing' : ''} ${isShielded[playerIdx] ? 'shielded-card' : ''} ${isShielded[playerIdx] && missEffectTarget === playerIdx ? 'shield-miss' : ''} ${slashEffectTarget === playerIdx ? 'slash-hit' : ''}`}
                     style={{
                       '--rot': `${rot}deg`, '--trY': `${trY}px`,
                       '--card-aura': aura,
@@ -9104,7 +9129,7 @@
               } else {
                 return (
                   <div key={`back-${i}`}
-                    className={`card back ${isDealing ? 'dealing' : ''} ${isShielded[playerIdx] ? 'shielded-card' : ''} ${isShielded[playerIdx] && missEffectTarget === playerIdx ? 'shield-miss' : ''}`}
+                    className={`card back ${isDealing ? 'dealing' : ''} ${isShielded[playerIdx] ? 'shielded-card' : ''} ${isShielded[playerIdx] && missEffectTarget === playerIdx ? 'shield-miss' : ''} ${slashEffectTarget === playerIdx ? 'slash-hit' : ''}`}
                     style={{
                       '--deal-delay': dealDelay,
                       transform: `translateX(-50%) rotate(${rot}deg) translateY(${trY}px)`,
