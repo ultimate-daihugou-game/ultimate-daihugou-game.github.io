@@ -6722,7 +6722,7 @@
     const TCG_DATA = {
       'A': { name: 'サービスＡ', desc: 'このカードで場が流れた時、自身の手元に帰還', url: 'Aimage.webp', icon: '🎯', auraColor: '#2980b9' },
       '2': { name: '２ナイト', desc: '能力なし', url: '2image.webp', icon: '', auraColor: '#27ae60' },
-      '3': { name: '３コモン', desc: '能力なし', url: '3image.webp', icon: '', auraColor: '#7f8c8d' },
+      '3': { name: '３コモン', desc: '3枚出し時のみ革命。それ以外は能力なし', url: '3image.webp', icon: '', auraColor: '#7f8c8d' },
       '4': { name: '４シールド', desc: 'このターン、他プレイヤーからの攻撃を受けない', url: '4image.webp', icon: '🛡️', auraColor: '#00b4d8' },
       '5': { name: 'プラス5', desc: '他のカードと合計したランクの効果を発動', url: '5image.webp', icon: '➕', auraColor: '#ff4444' },
       '6': { name: '６フェニックス', desc: '墓地からランダムにカードを入手', url: '6image.webp', icon: '🔥', auraColor: '#8e44ad' },
@@ -7797,7 +7797,8 @@
         const rank = effectiveRank;
         const isPlus5Combo = playedCards.length === 2 && playedCards.some(c => c.rank === '5') && playedCards.some(c => c.rank !== '5');
         let effectDelay = isPlus5Combo ? 6500 : 3400;
-        if (playedCards.length >= 4) effectDelay += 2200; // Account for revolution animation push
+        const isThreeOf3s = (playedCards.length === 3 && rank === '3');
+        if (playedCards.length >= 4 || isThreeOf3s) effectDelay += 2200; // Account for revolution animation push
         const count = isPlus5Combo ? 1 : playedCards.length; // プラス5の合成は1枚出し判定とする
         const tcg = TCG_DATA[rank];
 
@@ -7809,8 +7810,8 @@
           desc = '効果なし（ただの5の2枚出し）';
         }
 
-        // 革命判定 (同時出しが4枚以上)
-        if (playedCards.length >= 4) {
+        // 革命判定 (同時出しが4枚以上、または3の3枚出し)
+        if (playedCards.length >= 4 || isThreeOf3s) {
           isRev = !isRev;
           setIsRevolution(isRev);
         }
@@ -10294,7 +10295,7 @@
                   let topPercent = 50;
                   if (totalT === 2) topPercent = tIndex === 0 ? 30 : 70;
                   if (totalT === 3) topPercent = tIndex === 0 ? 20 : tIndex === 1 ? 50 : 80;
-                  const scale = totalT === 1 ? 1.3 : totalT === 2 ? 1.0 : 0.8;
+                  const scale = isMobile ? (totalT === 1 ? 0.85 : totalT === 2 ? 0.7 : 0.55) : (totalT === 1 ? 1.1 : totalT === 2 ? 0.9 : 0.75);
                   targetStyle = { '--target-top': `${topPercent}%`, '--target-scale': scale };
                 }
                 const myMargin = posClass === 'pos-bottom' ? '-60px' : (posClass === 'pos-top' ? '80px' : '0');
