@@ -1634,23 +1634,54 @@
       animation: a-slash-strike 0.3s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
     }
 
-    .slash-hit::after {
+    .slash-hit::before, .slash-hit::after {
       content: '';
       position: absolute;
-      top: -30px; left: -400px; width: 800px; height: 12px;
-      background: linear-gradient(90deg, transparent, #2ecc71, #ffffff, #2ecc71, transparent);
-      transform: translateY(-50%) rotate(25deg);
-      box-shadow: 0 0 20px #2ecc71, 0 0 40px #ffffff;
+      top: calc(var(--card-height, 135px) / 2);
+      left: -250px; 
+      width: 500px; 
+      height: 6px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(46, 204, 113, 0) 20%, 
+        #2ecc71 45%, 
+        #ffffff 50%, 
+        #2ecc71 55%, 
+        rgba(46, 204, 113, 0) 80%, 
+        transparent 100%
+      );
+      box-shadow: 0 0 15px #2ecc71, 0 0 30px #2ecc71, inset 0 0 5px #fff;
+      border-radius: 50%;
       opacity: 0;
       z-index: 9999;
-      animation: slash-hit-anim 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
       pointer-events: none;
+      mix-blend-mode: screen;
     }
 
-    @keyframes slash-hit-anim {
-      0% { left: -400px; opacity: 0; transform: translateY(-50%) rotate(25deg) scaleY(0.1); }
-      50% { opacity: 1; transform: translateY(-50%) rotate(25deg) scaleY(1.5); }
-      100% { left: 0px; opacity: 0; transform: translateY(-50%) rotate(25deg) scaleY(0.1); }
+    .player-area.player-0.slash-hit::before,
+    .player-area.player-0.slash-hit::after {
+      top: auto;
+      bottom: calc(var(--card-height, 135px) / 2);
+    }
+
+    .slash-hit::before {
+      animation: prem-slash-anim-1 0.25s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    }
+
+    .slash-hit::after {
+      animation: prem-slash-anim-2 0.25s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.1s;
+    }
+
+    @keyframes prem-slash-anim-1 {
+      0% { transform: translateY(-50%) rotate(25deg) translateX(-150px) scaleX(0.2); opacity: 0; filter: brightness(2); }
+      30% { opacity: 1; transform: translateY(-50%) rotate(25deg) translateX(0px) scaleX(1); filter: brightness(2.5); }
+      100% { transform: translateY(-50%) rotate(25deg) translateX(150px) scaleX(0.2); opacity: 0; filter: brightness(1); }
+    }
+
+    @keyframes prem-slash-anim-2 {
+      0% { transform: translateY(-50%) rotate(-25deg) translateX(-150px) scaleX(0.2); opacity: 0; filter: brightness(2); }
+      30% { opacity: 1; transform: translateY(-50%) rotate(-25deg) translateX(0px) scaleX(1); filter: brightness(2.5); }
+      100% { transform: translateY(-50%) rotate(-25deg) translateX(150px) scaleX(0.2); opacity: 0; filter: brightness(1); }
     }
 
     @keyframes a-slash-strike {
