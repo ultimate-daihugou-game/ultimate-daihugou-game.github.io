@@ -1637,12 +1637,12 @@
     .slash-hit::after {
       content: '';
       position: absolute;
-      top: 50%; left: -50%; width: 200%; height: 6px;
+      top: 50%; left: -50%; width: 200%; height: 10px;
       background: linear-gradient(90deg, transparent, #2ecc71, #ffffff, #2ecc71, transparent);
       transform: translateY(-50%) rotate(25deg);
-      box-shadow: 0 0 15px #2ecc71, 0 0 30px #ffffff;
+      box-shadow: 0 0 20px #2ecc71, 0 0 40px #ffffff;
       opacity: 0;
-      z-index: 100;
+      z-index: 9999;
       animation: slash-hit-anim 0.3s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
       pointer-events: none;
     }
@@ -9029,7 +9029,7 @@
         return (
           <div key={playerIdx}
             data-player-hand={playerIdx}
-            className={`player-area player-${playerIdx} ${turn === playerIdx ? 'active-turn' : ''} ${watchSelecting && playerIdx !== myPlayerIndex && !isDead && !isShielded[playerIdx] ? 'watch-clickable' : ''} ${watchSelecting && playerIdx !== myPlayerIndex && !isDead && isShielded[playerIdx] ? 'watch-shielded' : ''}`}
+            className={`player-area player-${playerIdx} ${turn === playerIdx ? 'active-turn' : ''} ${watchSelecting && playerIdx !== myPlayerIndex && !isDead && !isShielded[playerIdx] ? 'watch-clickable' : ''} ${watchSelecting && playerIdx !== myPlayerIndex && !isDead && isShielded[playerIdx] ? 'watch-shielded' : ''} ${slashEffectTarget === playerIdx ? 'slash-hit' : ''}`}
             onPointerDown={handlePointerDown}
             onPointerMove={(e) => handlePointerMove(e, playerIdx)}
             onPointerUp={handlePointerUp}
@@ -9106,7 +9106,7 @@
                 return (
                   <div key={c.id}
                     data-card-id={c.id}
-                    className={`${getCardClass(c)} selectable ${isSelected ? (isMobile ? 'mobile-selected' : 'selected') : ''} ${isHighlighted ? 'received-highlight' : ''} ${isPhoenixGlow ? 'phoenix-glow' : ''} ${isDealing ? 'dealing' : ''} ${isShielded[playerIdx] ? 'shielded-card' : ''} ${isShielded[playerIdx] && missEffectTarget === playerIdx ? 'shield-miss' : ''} ${slashEffectTarget === playerIdx ? 'slash-hit' : ''}`}
+                    className={`${getCardClass(c)} selectable ${isSelected ? (isMobile ? 'mobile-selected' : 'selected') : ''} ${isHighlighted ? 'received-highlight' : ''} ${isPhoenixGlow ? 'phoenix-glow' : ''} ${isDealing ? 'dealing' : ''} ${isShielded[playerIdx] ? 'shielded-card' : ''} ${isShielded[playerIdx] && missEffectTarget === playerIdx ? 'shield-miss' : ''}`}
                     style={{
                       '--rot': `${rot}deg`, '--trY': `${trY}px`,
                       '--card-aura': aura,
@@ -9139,7 +9139,7 @@
               } else {
                 return (
                   <div key={`back-${i}`}
-                    className={`card back ${isDealing ? 'dealing' : ''} ${isShielded[playerIdx] ? 'shielded-card' : ''} ${isShielded[playerIdx] && missEffectTarget === playerIdx ? 'shield-miss' : ''} ${slashEffectTarget === playerIdx ? 'slash-hit' : ''}`}
+                    className={`card back ${isDealing ? 'dealing' : ''} ${isShielded[playerIdx] ? 'shielded-card' : ''} ${isShielded[playerIdx] && missEffectTarget === playerIdx ? 'shield-miss' : ''}`}
                     style={{
                       '--deal-delay': dealDelay,
                       transform: `translateX(-50%) rotate(${rot}deg) translateY(${trY}px)`,
