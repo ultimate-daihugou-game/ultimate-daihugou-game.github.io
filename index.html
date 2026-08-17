@@ -1662,7 +1662,7 @@
     }
 
     .slash-hit::before {
-      animation: prem-slash-anim-1 1s ease-in-out forwards;
+      animation: prem-slash-anim-1 0.7s ease-in-out forwards;
     }
 
     @keyframes prem-slash-anim-1 {
@@ -7894,7 +7894,7 @@
               setTimeout(() => {
                 setSlashEffectTarget(nextP);
                 if (sm.playSlashSE) sm.playSlashSE();
-                setTimeout(() => setSlashEffectTarget(null), 1500);
+                setTimeout(() => setSlashEffectTarget(null), 1000);
                 setTimeout(() => {
                   setIsAltarActive(true);
                   setDiscardingToGy(dropped.map(c => ({ card: c, fromPlayer: nextP })));
@@ -7908,7 +7908,7 @@
                       setTimeout(() => setIsAltarActive(false), 800);
                     }, 1200);
                   }, dropCount * 120 + 800);
-                }, 1000);
+                }, 700);
               }, effectDelay);
               steps = 1;
             }
