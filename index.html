@@ -1650,12 +1650,13 @@
         rgba(46, 204, 113, 0) 80%, 
         transparent 100%
       );
-      box-shadow: 0 0 15px #2ecc71, 0 0 30px #2ecc71, inset 0 0 5px #fff;
+      box-shadow: 0 0 25px 5px rgba(46, 204, 113, 1), 0 0 50px 15px rgba(46, 204, 113, 0.8), inset 0 0 8px #fff;
       border-radius: 50%;
       opacity: 0;
       z-index: 9999;
       pointer-events: none;
       mix-blend-mode: screen;
+      filter: drop-shadow(0 0 10px #2ecc71);
     }
 
     .player-area.player-0.slash-hit::before,
@@ -1665,23 +1666,23 @@
     }
 
     .slash-hit::before {
-      animation: prem-slash-anim-1 0.25s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+      animation: prem-slash-anim-1 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
     }
 
     .slash-hit::after {
-      animation: prem-slash-anim-2 0.25s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.1s;
+      animation: prem-slash-anim-2 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards 0.2s;
     }
 
     @keyframes prem-slash-anim-1 {
-      0% { transform: translateY(-50%) rotate(25deg) translateX(-150px) scaleX(0.2); opacity: 0; filter: brightness(2); }
-      30% { opacity: 1; transform: translateY(-50%) rotate(25deg) translateX(0px) scaleX(1); filter: brightness(2.5); }
-      100% { transform: translateY(-50%) rotate(25deg) translateX(150px) scaleX(0.2); opacity: 0; filter: brightness(1); }
+      0% { transform: translateY(-50%) rotate(25deg) translateX(-150px) scaleX(0.2); opacity: 0; filter: brightness(2) drop-shadow(0 0 10px #2ecc71); }
+      40% { opacity: 1; transform: translateY(-50%) rotate(25deg) translateX(0px) scaleX(1); filter: brightness(3) drop-shadow(0 0 20px #2ecc71); }
+      100% { transform: translateY(-50%) rotate(25deg) translateX(150px) scaleX(0.2); opacity: 0; filter: brightness(1) drop-shadow(0 0 10px #2ecc71); }
     }
 
     @keyframes prem-slash-anim-2 {
-      0% { transform: translateY(-50%) rotate(-25deg) translateX(-150px) scaleX(0.2); opacity: 0; filter: brightness(2); }
-      30% { opacity: 1; transform: translateY(-50%) rotate(-25deg) translateX(0px) scaleX(1); filter: brightness(2.5); }
-      100% { transform: translateY(-50%) rotate(-25deg) translateX(150px) scaleX(0.2); opacity: 0; filter: brightness(1); }
+      0% { transform: translateY(-50%) rotate(-25deg) translateX(-150px) scaleX(0.2); opacity: 0; filter: brightness(2) drop-shadow(0 0 10px #2ecc71); }
+      40% { opacity: 1; transform: translateY(-50%) rotate(-25deg) translateX(0px) scaleX(1); filter: brightness(3) drop-shadow(0 0 20px #2ecc71); }
+      100% { transform: translateY(-50%) rotate(-25deg) translateX(150px) scaleX(0.2); opacity: 0; filter: brightness(1) drop-shadow(0 0 10px #2ecc71); }
     }
 
     @keyframes a-slash-strike {
@@ -7907,7 +7908,7 @@
               setTimeout(() => {
                 setSlashEffectTarget(nextP);
                 if (sm.playSlashSE) sm.playSlashSE();
-                setTimeout(() => setSlashEffectTarget(null), 600);
+                setTimeout(() => setSlashEffectTarget(null), 800);
                 setTimeout(() => {
                   setIsAltarActive(true);
                   setDiscardingToGy(dropped.map(c => ({ card: c, fromPlayer: nextP })));
@@ -7921,7 +7922,7 @@
                       setTimeout(() => setIsAltarActive(false), 800);
                     }, 1200);
                   }, dropCount * 120 + 800);
-                }, 400);
+                }, 500);
               }, effectDelay);
               steps = 1;
             }
