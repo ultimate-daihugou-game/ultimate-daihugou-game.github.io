@@ -7917,9 +7917,10 @@
             } else {
               const dropCount = Math.min(count * 2, h[nextP].length);
               let dropped = [];
+              let tempHand = [...h[nextP]];
               for (let i = 0; i < dropCount; i++) {
-                const cIndex = Math.floor(Math.random() * h[nextP].length);
-                const card = h[nextP].splice(cIndex, 1)[0];
+                const cIndex = Math.floor(Math.random() * tempHand.length);
+                const card = tempHand.splice(cIndex, 1)[0];
                 dropped.push(card);
               }
               isAsync = true;
@@ -7927,6 +7928,13 @@
               setTimeout(() => {
                 setSlashEffectTarget(nextP);
                 if (sm.playSlashSE) sm.playSlashSE();
+                
+                setHands(prev => {
+                  const updated = [...prev];
+                  updated[nextP] = updated[nextP].filter(c => !dropped.some(d => d.id === c.id));
+                  return updated;
+                });
+
                 setTimeout(() => setSlashEffectTarget(null), 1000);
                 setTimeout(() => {
                   setIsAltarActive(true);
@@ -9545,6 +9553,7 @@
           watchSelecting,
           selectionMode,
           selectionInfo,
+          serviceAState,
           hands: handsRef.current,
           isShielded,
           ranksDiscovered,
@@ -9552,7 +9561,7 @@
           turn,
           myPlayerIndex
         };
-      });
+      }, [turn, remotePlayers, isActionLoading, multiplayerMode, isAnimating, watchTarget, watchSelecting, selectionMode, selectionInfo, serviceAState, isShielded, ranksDiscovered, isGameOver, myPlayerIndex, hands]);
 
       // ターンが変わるごとに確実にタイマーを15秒にリセットし、setIntervalを開始
       useEffect(() => {
@@ -9590,7 +9599,7 @@
 
       // 選択モード用 10秒タイマー
       useEffect(() => {
-        if (!selectionMode && !watchSelecting) {
+        if (!selectionMode && !watchSelecting && !serviceAState) {
           if (selectionTimeLeft !== 10) setSelectionTimeLeft(10);
           return;
         }
@@ -9602,7 +9611,11 @@
             currentCount = c.selectionInfo.count;
           }
           
-          if (watchSelecting) {
+          if (c.serviceAState) {
+            const options = ['6', '7', 'Q', 'K'];
+            const choice = options[Math.floor(Math.random() * options.length)];
+            executeServiceAEffect(choice);
+          } else if (watchSelecting) {
             setWatchSelecting(false);
             const validTargets = [0, 1, 2, 3].filter(p => p !== turn && !c.ranksDiscovered.includes(p) && !c.isShielded[p]);
             if (validTargets.length > 0) {
@@ -9637,7 +9650,7 @@
         }, isFastForwardRef.current ? 10 : 1000);
 
         return () => clearTimeout(timer);
-      }, [selectionMode, watchSelecting, selectionTimeLeft, turn]);
+      }, [selectionMode, watchSelecting, serviceAState, selectionTimeLeft, turn]);
 
       return (
         <>
@@ -10755,6 +10768,10 @@
                   <div className="selection-guide">
                     サービスAの効果を選択してください<br/>
                     <small>（{serviceAState.count}枚出しの威力になります）</small>
+                  </div>
+                  
+                  <div className="turn-timer-gauge-container" style={{ width: '80%', marginTop: '10px' }}>
+                     <div className={`turn-timer-gauge-bar ${selectionTimeLeft <= 3 ? 'urgent' : ''}`} style={{ width: `${(selectionTimeLeft / 10) * 100}%`, backgroundColor: '#e74c3c' }}></div>
                   </div>
                   
                   <div className="rank-selector" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '20px' }}>
