@@ -8484,6 +8484,14 @@
         setTimeout(() => {
           const stepsToUse = effectRes.isAsync ? 1 : steps;
 
+          // 遅延エフェクト（2等）で手札が0枚になったプレイヤーを追加チェック
+          handsRef.current.forEach((h, idx) => {
+            if (h.length === 0 && !updatedRanks.includes(idx)) {
+              updatedRanks.push(idx);
+            }
+          });
+          setRanksDiscovered([...updatedRanks]);
+
           // 残り1人になったかチェック (updatedRanksを使用)
           const remaining = [0, 1, 2, 3].filter(p => !updatedRanks.includes(p));
           if (updatedRanks.length >= 3) {
@@ -8832,12 +8840,38 @@
           // アニメーション完了（約2s）待機してから次へ進む
           if (actingIdx === myPlayerIndex) setIsActionLoading(true);
           setTimeout(() => {
+            // 遅延エフェクト（Q等）で手札が0枚になったプレイヤーを追加チェック
+            let updatedRanks = ranksDiscovered ? [...ranksDiscovered] : [];
+            handsRef.current.forEach((h, idx) => {
+              if (h.length === 0 && !updatedRanks.includes(idx)) {
+                updatedRanks.push(idx);
+              }
+            });
+            if (updatedRanks.length > ranksDiscovered.length) {
+              setRanksDiscovered([...updatedRanks]);
+            }
+
+            // 残り1人になったかチェック (updatedRanksを使用)
+            const remaining = [0, 1, 2, 3].filter(p => !updatedRanks.includes(p));
+            if (updatedRanks.length >= 3) {
+              let finalRanks = [...updatedRanks];
+              if (remaining.length === 1) {
+                finalRanks.push(remaining[0]);
+              }
+              setRanksDiscovered(finalRanks);
+              setRoundResults(finalRanks);
+              setIsGameOver(true);
+              setTurn(-1);
+              if (sm.playJBackSE) sm.playJBackSE();
+              return;
+            }
+
             if (isServiceA) {
               setTurn(-1);
               setIsActionLoading(false);
               setTimeout(() => setTurn(actingIdx), 50);
             } else {
-              executeNextTurn(actingIdx, 1, null, ranksDiscovered);
+              executeNextTurn(actingIdx, 1, null, updatedRanks);
             }
           }, 2000);
         }
