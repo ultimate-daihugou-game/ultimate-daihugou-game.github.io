@@ -3961,7 +3961,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.1);
-      font-size: 14rem;
+      font-size: 10rem;
       font-weight: 900;
       font-family: 'Cinzel', 'Noto Serif JP', serif;
       
@@ -7074,7 +7074,7 @@
             const choice = options[Math.floor(Math.random() * options.length)];
             setTimeout(() => {
               executeServiceAEffect(choice);
-            }, 2500); // Wait a bit before CPU chooses
+            }, 500); // 演出後にすぐ選択する
           }
         }
       }, [serviceAState, isActionLoading]);
