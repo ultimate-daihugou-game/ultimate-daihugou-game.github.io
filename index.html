@@ -7033,21 +7033,8 @@
       const [clearingField, setClearingField] = useState(false);
       const [phoenixActive, setPhoenixActive] = useState(false);
       const [guillotineActive, setGuillotineActive] = useState(false);
-      const [rev, setRev] = useState(false); // Simplified for instruction context
-      
-      useEffect(() => {
-        if (turn !== prevTurnRef.current) {
-          if (turn === myPlayerIndex) setIsActionLoading(false);
-          cpuThinkingRef.current = false;
-          prevTurnRef.current = turn;
-          if (multiplayerMode === 'active' && isHost && turn !== -1) {
-            broadcastState(hands, turn);
-          }
-          if (cpuThinkingRef.current) return;
-          cpuThinkingRef.current = true;
-          setTimeout(playCpuTurn, 2500); // 思考時間
-        }
-      }, [turn, isAnimating, watchTarget, watchSelecting, selectionMode, serviceAState, isActionLoading]);
+      const [reverseActive, setReverseActive] = useState(false);
+      const [bomberActive, setBomberActive] = useState(false);
 
       // Service A CPU Auto-Selection
       useEffect(() => {
@@ -7268,7 +7255,7 @@
         }
         
         // CPUターンのトリガー
-        if (turn !== myPlayerIndex && !ranksDiscovered.includes(turn) && !selectionMode && !isAnimating && !watchTarget) {
+        if (turn !== myPlayerIndex && !ranksDiscovered.includes(turn) && !selectionMode && !serviceAState && !isAnimating && !watchTarget && turn !== -1) {
           // マルチプレイヤー時はホストのみがCPUを動かす
           if (multiplayerMode === 'active' && !isHost) return;
           const isCpuTurn = multiplayerMode === 'active' ? (remotePlayers[turn] && remotePlayers[turn].id && remotePlayers[turn].id.startsWith('cpu')) : true;
@@ -7281,7 +7268,7 @@
           }, isFastForwardRef.current ? 10 : 600);
           return () => clearTimeout(timeout);
         }
-      }, [turn, selectionMode, isAnimating, watchTarget, multiplayerMode, isHost, myPlayerIndex]);
+      }, [turn, selectionMode, serviceAState, isAnimating, watchTarget, multiplayerMode, isHost, myPlayerIndex]);
 
       useEffect(() => {
         if (effectMessage) {
