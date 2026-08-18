@@ -45,6 +45,37 @@
       position: relative;
     }
 
+    /* Global Loading Overlay */
+    .global-loading-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: #050505;
+      z-index: 9999999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #ccc;
+      font-family: 'Cinzel', serif;
+      transition: opacity 0.5s ease-out;
+    }
+    .global-loading-overlay.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .global-loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      border-top-color: #8a0303;
+      animation: global-spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes global-spin {
+      to { transform: rotate(360deg); }
+    }
+
     /* 全体フィルター効果 (11バック、8切り暗転など) */
     .screen-filter {
       position: absolute;
@@ -6853,6 +6884,43 @@
   const [showLegalModal, setShowLegalModal] = useState(null);
   const [showInterstitialAd, setShowInterstitialAd] = useState(false);
   
+  const [isAppLoading, setIsAppLoading] = useState(true);
+  const [showLoadingUi, setShowLoadingUi] = useState(true);
+
+  useEffect(() => {
+    setIsAppLoading(true);
+    setShowLoadingUi(true);
+
+    let bgUrl = '';
+    if (gameStarted) {
+      bgUrl = 'room-bg.webp';
+    } else if (titleStage === 2) {
+      bgUrl = 'lobby-bg.webp';
+    } else {
+      bgUrl = 'title-bg.webp';
+    }
+    
+    // preload image
+    const img = new Image();
+    img.src = bgUrl;
+    img.onload = () => {
+      // 念のため少しだけ遅延させてDOMの描画を待つ
+      setTimeout(() => setIsAppLoading(false), 300);
+    };
+    img.onerror = () => {
+      setIsAppLoading(false);
+    };
+  }, [gameStarted, titleStage]);
+
+  useEffect(() => {
+    if (!isAppLoading) {
+      const timer = setTimeout(() => setShowLoadingUi(false), 500); // fade duration
+      return () => clearTimeout(timer);
+    } else {
+      setShowLoadingUi(true);
+    }
+  }, [isAppLoading]);
+  
   // Carousel State for Mobile
   const [carouselIndex, setCarouselIndex] = useState(0);
   const touchStartX = useRef(0);
@@ -9726,6 +9794,12 @@
 
       return (
         <>
+          {showLoadingUi && (
+            <div className={`global-loading-overlay ${!isAppLoading ? 'fade-out' : ''}`}>
+              <div className="global-loading-spinner"></div>
+              <p style={{ letterSpacing: '4px', fontSize: '1.2rem' }}>LOADING...</p>
+            </div>
+          )}
           {isMobile && (
             <div className="mobile-margin-top">
               <div className="mobile-ad-banner">
