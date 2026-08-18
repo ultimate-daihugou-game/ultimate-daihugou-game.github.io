@@ -3956,6 +3956,33 @@
       animation: rev-gorgeous-anim 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
     }
 
+    .servicea-gorgeous-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.1);
+      font-size: 14rem;
+      font-weight: 900;
+      font-family: 'Cinzel', 'Noto Serif JP', serif;
+      
+      color: #ffffff;
+      background: linear-gradient(to bottom, #ffffff 0%, #e0ffff 40%, #87cefa 70%, #00bfff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      
+      filter: 
+        drop-shadow(0 0 15px rgba(0, 255, 255, 0.9))
+        drop-shadow(0 0 35px rgba(0, 191, 255, 0.8))
+        drop-shadow(0 0 70px rgba(0, 0, 205, 0.9))
+        drop-shadow(0 0 120px rgba(0, 0, 0, 1));
+      
+      opacity: 0;
+      z-index: 999999;
+      pointer-events: none;
+      white-space: nowrap;
+      animation: rev-gorgeous-anim 3s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    }
+
     @keyframes rev-gorgeous-anim {
       0% {
         transform: translate(-50%, -50%) scale(0.3);
@@ -6974,6 +7001,7 @@
       const [playDirection, setPlayDirection] = useState(1);
       const [effectMessage, setEffectMessage] = useState(null);
       const [revAnimMessage, setRevAnimMessage] = useState(null);
+      const [serviceAAnimMessage, setServiceAAnimMessage] = useState(null);
       const [watchTarget, setWatchTarget] = useState(null);
       const [watchSelectedTargets, setWatchSelectedTargets] = useState([]);
       const [serviceAState, setServiceAState] = useState(null);
@@ -7293,6 +7321,15 @@
           return () => clearTimeout(tmExit);
         }
       }, [revAnimMessage]);
+
+      useEffect(() => {
+        if (serviceAAnimMessage) {
+          const tmExit = setTimeout(() => {
+            setServiceAAnimMessage(null);
+          }, 3000);
+          return () => clearTimeout(tmExit);
+        }
+      }, [serviceAAnimMessage]);
 
       // Update active turn ring position
       useEffect(() => {
@@ -7759,12 +7796,13 @@
             }
             
             if (isA_Flow) {
-              // サービスAのUIを表示
+              // サービスAの文字演出を表示
               setTurn(-1);
-              triggerCutinGlobal('A', 'サービスA', '効果を選択してください');
+              setServiceAAnimMessage('サービスA');
+              if (sm.playStartSE) sm.playStartSE();
               setTimeout(() => {
                 setServiceAState({ playerIndex: nextStarter, count: countA });
-              }, 1500);
+              }, 3000);
             } else {
               // 自動的に次の手番を開始
               setTurn(-1);
@@ -10428,6 +10466,13 @@
               {revAnimMessage && (
                 <div className="rev-gorgeous-overlay">
                   {revAnimMessage}
+                </div>
+              )}
+
+              {/* サービスA文字演出 */}
+              {serviceAAnimMessage && (
+                <div className="servicea-gorgeous-overlay">
+                  {serviceAAnimMessage}
                 </div>
               )}
 
