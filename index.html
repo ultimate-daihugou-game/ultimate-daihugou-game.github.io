@@ -6976,6 +6976,7 @@
       const [revAnimMessage, setRevAnimMessage] = useState(null);
       const [watchTarget, setWatchTarget] = useState(null);
       const [watchSelectedTargets, setWatchSelectedTargets] = useState([]);
+      const [serviceAState, setServiceAState] = useState(null);
 
       const [selectionTimeLeft, setSelectionTimeLeft] = useState(10);
       const [myProfile, setMyProfile] = useState(() => {
@@ -7032,8 +7033,37 @@
       const [clearingField, setClearingField] = useState(false);
       const [phoenixActive, setPhoenixActive] = useState(false);
       const [guillotineActive, setGuillotineActive] = useState(false);
-      const [reverseActive, setReverseActive] = useState(false);
-      const [bomberActive, setBomberActive] = useState(false);
+      const [rev, setRev] = useState(false); // Simplified for instruction context
+      
+      useEffect(() => {
+        if (turn !== prevTurnRef.current) {
+          if (turn === myPlayerIndex) setIsActionLoading(false);
+          cpuThinkingRef.current = false;
+          prevTurnRef.current = turn;
+          if (multiplayerMode === 'active' && isHost && turn !== -1) {
+            broadcastState(hands, turn);
+          }
+          if (cpuThinkingRef.current) return;
+          cpuThinkingRef.current = true;
+          setTimeout(playCpuTurn, 2500); // 思考時間
+        }
+      }, [turn, isAnimating, watchTarget, watchSelecting, selectionMode, serviceAState, isActionLoading]);
+
+      // Service A CPU Auto-Selection
+      useEffect(() => {
+        if (serviceAState && serviceAState.playerIndex !== 0 && !isActionLoading) {
+          const rp = remotePlayers[serviceAState.playerIndex];
+          const isCpu = !rp || (rp.id && rp.id.startsWith('cpu'));
+          if (isCpu) {
+            const options = ['6', '7', 'Q', 'K'];
+            const choice = options[Math.floor(Math.random() * options.length)];
+            setTimeout(() => {
+              executeServiceAEffect(choice);
+            }, 2500); // Wait a bit before CPU chooses
+          }
+        }
+      }, [serviceAState, isActionLoading]);
+      
       const [passThreadActive, setPassThreadActive] = useState(false);
       const [skipTarget, setSkipTarget] = useState(null); // CSS Chain effect
       const [missEffectTarget, setMissEffectTarget] = useState(null); // Shield sparks
@@ -7731,12 +7761,15 @@
         const activePlayersCount = 4 - ranksDiscovered.length;
         const newPassCount = passCount + 1;
         
-        const isServiceAce = tableCards.length > 0 && tableCards.every(tc => tc.card.rank === 'A');
-        const requiredPassCount = isServiceAce ? activePlayersCount : (activePlayersCount - 1);
+        const requiredPassCount = activePlayersCount - 1;
 
         // 場に出ているカードがあり、必要数パスした場合
         if (newPassCount >= requiredPassCount && tableCards.length > 0) {
           if (isHost) broadcastEvent({ event: 'PASS', playerIndex: playerIndex });
+          
+          const isA_Flow = tableCards.every(tc => tc.card.rank === 'A');
+          const countA = tableCards.length;
+
           triggerClearFieldAnim(() => {
             clearFieldLogic();
             let nextStarter = lastPlayPlayer;
@@ -7745,10 +7778,20 @@
             if (currentRanks.includes(nextStarter)) {
               nextStarter = getNextPlayer(nextStarter, 1, null, currentRanks);
             }
-            // 自動的に次の手番を開始
-            setTurn(-1);
-            setIsActionLoading(false); // UIロック解除
-            setTimeout(() => setTurn(nextStarter), 10);
+            
+            if (isA_Flow) {
+              // サービスAのUIを表示
+              setTurn(-1);
+              triggerCutinGlobal('A', 'サービスA', '効果を選択してください');
+              setTimeout(() => {
+                setServiceAState({ playerIndex: nextStarter, count: countA });
+              }, 1500);
+            } else {
+              // 自動的に次の手番を開始
+              setTurn(-1);
+              setIsActionLoading(false); // UIロック解除
+              setTimeout(() => setTurn(nextStarter), 10);
+            }
           });
         } else {
           setPassCount(newPassCount);
@@ -7819,7 +7862,18 @@
         return compareStrength(effectiveStrength, tableStrength);
       };
 
-      const evaluateSpecialEffects = (playerIndex, playedCards, currentHands, currentGraveyard) => {
+      const triggerCutinGlobal = (rank, customTitle = '', customDesc = '') => {
+        let tcg = TCG_DATA[rank];
+        if (!tcg) return;
+        let aura = tcg.auraColor || '#b8860b';
+        let name = customTitle || tcg.name;
+        let desc = customDesc || tcg.desc;
+        if (sm.playEffectSE) sm.playEffectSE(rank);
+        setCutIn({ name, effect: desc, url: tcg.url, rank, auraColor: aura, comboData: null });
+        setTimeout(() => setCutIn(null), 2500);
+      };
+
+      const evaluateSpecialEffects = (playerIndex, playedCards, currentHands, currentGraveyard, opts = {}) => {
         let title = ''; let desc = ''; let steps = 1; let pDir = playDirection;
         let gy = [...currentGraveyard]; let h = [...currentHands];
         let shieldStates = [...isShielded]; let is11B = is11Back; let isFieldCleared = false;
@@ -7962,7 +8016,7 @@
                 // カットイン演出(800ms開始+2500ms)終了後にUIを表示
                 setTimeout(() => {
                   setSelectionMode('7');
-                  setSelectionInfo({ playerIndex, nextP, count: Math.min(count, h[playerIndex].length), isSpecialEffect: true });
+                  setSelectionInfo({ playerIndex, nextP, count: Math.min(count, h[playerIndex].length), isSpecialEffect: true, isServiceA: opts.isServiceA });
                 }, effectDelay);
                 steps = 0;
               } else if (isWaitingForOther) {
@@ -8070,7 +8124,7 @@
             setTimeout(() => {
               setSelectionMode('Q');
               // Qボンバーは出した枚数分選択可能
-              setSelectionInfo({ playerIndex, count: Math.min(count, RANKS.length) });
+              setSelectionInfo({ playerIndex, count: Math.min(count, RANKS.length), isServiceA: opts.isServiceA });
             }, effectDelay);
             steps = 0;
           } else {
@@ -8171,7 +8225,8 @@
               setWatchTarget({
                 targetIndexes: targets,
                 activatorIndex: playerIndex,
-                endTime: Date.now() + watchDuration
+                endTime: Date.now() + watchDuration,
+                isServiceA: opts.isServiceA
               });
               setTimeout(() => {
                 setWatchTarget(null);
@@ -8470,6 +8525,92 @@
         }, totalAnimTime);
       };
 
+      const executeServiceAEffect = (rank) => {
+        if (!serviceAState) return;
+        const { playerIndex, count } = serviceAState;
+        setServiceAState(null);
+
+        // Fake cards to evaluate effects
+        let fakeCards = [];
+        for (let i = 0; i < count; i++) {
+           fakeCards.push({ id: `fakeA_${Math.random()}`, rank: rank, suit: '♠' });
+        }
+        
+        let newHands = [...hands];
+        let currentGraveyard = [...graveyard];
+        const effectRes = evaluateSpecialEffects(playerIndex, fakeCards, newHands, currentGraveyard, { isServiceA: true });
+
+        // Calculate visual rank and trigger cut-in
+        const resTcg = TCG_DATA[rank];
+        const aura = resTcg?.auraColor || '#b8860b';
+        if (sm.playEffectSE) sm.playEffectSE(rank);
+        setCutIn({ name: resTcg?.name, effect: resTcg?.desc, url: resTcg?.url, rank: rank, auraColor: aura, comboData: null });
+        setTimeout(() => setCutIn(null), 2500);
+
+        // Sync State updates
+        newHands = effectRes.h.map(h => sortHand(h, effectRes.isRev, effectRes.is11B));
+        setHands(newHands);
+        setGraveyard(effectRes.gy);
+        setIsShielded(effectRes.shieldStates);
+
+        // Start turn logic: should execute after animations
+        const PHOENIX_FLIGHT_MS = 750;
+        const PHOENIX_GAP_MS = 200;
+        const phoenixTotalTime = effectRes.phoenixDrawn ? 3400 + 1200 + effectRes.phoenixDrawn.drawn.length * (PHOENIX_FLIGHT_MS + PHOENIX_GAP_MS) + 500 : 0;
+        let totalAnimTime = phoenixTotalTime > 0 ? phoenixTotalTime : (effectRes.isAsync ? (rank === 'Q' ? 5500 : (rank === 'K' ? 5000 : 3000)) : 2800);
+        if (isFastForwardRef.current) totalAnimTime = 50;
+        
+        if (playerIndex === 0) setIsActionLoading(true);
+
+        // 6フェニックス: 墓地シャッフル演出 (copied from executePlay)
+        if (effectRes.phoenixDrawn) {
+          const { drawn, playerIndex: pIdx } = effectRes.phoenixDrawn;
+          setTimeout(() => {
+            setGyShuffling(true);
+            setTimeout(() => {
+              setGyShuffling(false);
+              const flyNext = (i) => {
+                if (i >= drawn.length) {
+                  setIsAnimating(false);
+                  setTimeout(() => setIsAltarActive(false), 500);
+                  return;
+                }
+                const card = drawn[i];
+                const newFly = { from: 'graveyard', to: pIdx, card: { ...card, rank: '?' }, type: 'phoenix', id: Math.random(), delay: 0 };
+                setFlyingCards(prev => [...prev, newFly]);
+                setIsAnimating(true);
+                if (sm.playSlamSE) sm.playSlamSE();
+                setTimeout(() => {
+                  setFlyingCards(prev => prev.filter(f => f.id !== newFly.id));
+                  setHands(prev => {
+                     const updated = [...prev];
+                     updated[pIdx] = sortHand([...updated[pIdx], card], effectRes.isRev, effectRes.is11B);
+                     return updated;
+                  });
+                  if (pIdx === 0) {
+                     setHighlightedCardIds(prev => [...prev, card.id]);
+                     setTimeout(() => setHighlightedCardIds(prev => prev.filter(id => id !== card.id)), 4000);
+                  }
+                  flyNext(i + 1);
+                }, PHOENIX_FLIGHT_MS);
+              };
+              flyNext(0);
+            }, 1200);
+          }, 3300);
+        }
+
+        // Wait for animations, then set Turn to the player who played A
+        setTimeout(() => {
+           // Skip advancing turn if waiting for target select (K, 7, Q)
+           if (effectRes.steps === 0) return; 
+           
+           // Otherwise, setTurn back to the player
+           setTurn(-1);
+           setIsActionLoading(false);
+           setTimeout(() => setTurn(playerIndex), 50);
+        }, totalAnimTime);
+      };
+
       const playCpuTurn = () => {
         let hand = sortHand([...(hands[turn] || [])]);
         if (!hand || hand.length === 0) { cpuThinkingRef.current = false; return; }
@@ -8539,6 +8680,7 @@
         if (!info || !mode) return; // Fallback for safety
         const { playerIndex, nextP, count } = info;
         const actingIdx = remotePlayerIdx !== null ? remotePlayerIdx : playerIndex;
+        const isServiceA = info.isServiceA || watchTarget?.isServiceA;
         if (multiplayerMode === 'active' && !isHost && remotePlayerIdx === null) {
           sendActionToHost({ action: 'COMPLETE_EFFECT', choice, selectionInfo, selectionMode: mode });
           // return せずにローカルでも Optimistic に実行する
@@ -8562,7 +8704,13 @@
           setTimeout(() => {
             setWatchTarget(null);
             setIsAnimating(false);
-            executeNextTurn(actingIdx, 1);
+            if (isServiceA) {
+              setTurn(-1);
+              setIsActionLoading(false);
+              setTimeout(() => setTurn(actingIdx), 50);
+            } else {
+              executeNextTurn(actingIdx, 1);
+            }
             if (isHost) {
               broadcastState(hands);
             }
@@ -8581,7 +8729,17 @@
           if (mode === '7' && isShielded[nextP]) {
             triggerMiss(nextP);
             setSelectionMode(null); setSelectionInfo(null); setSelectedCards([]);
-            if (!watchSelecting) setTimeout(() => executeNextTurn(actingIdx, 1, null, ranksDiscovered), 1000);
+            if (!watchSelecting) {
+              setTimeout(() => {
+                if (isServiceA) {
+                  setTurn(-1);
+                  setIsActionLoading(false);
+                  setTimeout(() => setTurn(actingIdx), 50);
+                } else {
+                  executeNextTurn(actingIdx, 1, null, ranksDiscovered);
+                }
+              }, 1000);
+            }
             return;
           }
 
@@ -8686,7 +8844,15 @@
         if (!watchSelecting) {
           // アニメーション完了（約2s）待機してから次へ進む
           if (actingIdx === myPlayerIndex) setIsActionLoading(true);
-          setTimeout(() => executeNextTurn(actingIdx, 1, null, ranksDiscovered), 2000);
+          setTimeout(() => {
+            if (isServiceA) {
+              setTurn(-1);
+              setIsActionLoading(false);
+              setTimeout(() => setTurn(actingIdx), 50);
+            } else {
+              executeNextTurn(actingIdx, 1, null, ranksDiscovered);
+            }
+          }, 2000);
         }
       };
 
@@ -10601,6 +10767,31 @@
                       <span className="mystic-btn-text">{selectionMode === '7' ? '渡す' : selectionMode === '10' ? '捨てる' : '決定'}</span>
                     </button>
                   )}
+                </div>
+              )}
+
+              {/* Service A UI */}
+              {serviceAState && serviceAState.playerIndex === 0 && (
+                <div className="selection-overlay-ui">
+                  <div className="selection-guide">
+                    サービスAの効果を選択してください<br/>
+                    <small>（{serviceAState.count}枚出しの威力になります）</small>
+                  </div>
+                  
+                  <div className="rank-selector" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '20px' }}>
+                    {['6', '7', 'Q', 'K'].map(r => (
+                      <button key={r}
+                        className="action-btn mystic-btn"
+                        style={{ margin: 0, padding: '15px', height: 'auto', flexDirection: 'column' }}
+                        onClick={() => {
+                          if (sm.playLightPaperSE) sm.playLightPaperSE();
+                          executeServiceAEffect(r);
+                        }}>
+                        <span className="mystic-btn-text" style={{ fontSize: '1.2rem', marginBottom: '5px' }}>{r}</span>
+                        <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>{TCG_DATA[r]?.name}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
