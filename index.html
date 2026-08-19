@@ -716,7 +716,7 @@
     /* ゲージアニメーション */
     .watch-gauge-container {
       position: absolute;
-      bottom: -90px;
+      bottom: -40px;
       left: 50%;
       transform: translateX(-50%);
       width: 300px;
@@ -10832,9 +10832,9 @@
                   const tIndex = targetIdxList.indexOf(pIdx);
                   const totalT = targetIdxList.length;
                   let topPercent = (isMobile && totalT === 1) ? 42 : 50;
-                  if (totalT === 2) topPercent = tIndex === 0 ? 30 : 70;
-                  if (totalT === 3) topPercent = tIndex === 0 ? 20 : tIndex === 1 ? 50 : 80;
-                  const scale = isMobile ? (totalT === 1 ? 0.85 : totalT === 2 ? 0.7 : 0.55) : (totalT === 1 ? 1.1 : totalT === 2 ? 0.9 : 0.75);
+                  if (totalT === 2) topPercent = isMobile ? (tIndex === 0 ? 25 : 60) : (tIndex === 0 ? 30 : 70);
+                  if (totalT === 3) topPercent = isMobile ? (tIndex === 0 ? 15 : tIndex === 1 ? 40 : 65) : (tIndex === 0 ? 15 : tIndex === 1 ? 50 : 85);
+                  const scale = isMobile ? (totalT === 1 ? 0.85 : totalT === 2 ? 0.6 : 0.45) : (totalT === 1 ? 1.1 : totalT === 2 ? 0.85 : 0.65);
                   targetStyle = { '--target-top': `${topPercent}%`, '--target-scale': scale };
                 }
                 const myMargin = posClass === 'pos-bottom' ? '-60px' : (posClass === 'pos-top' ? '80px' : '0');
