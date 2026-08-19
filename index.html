@@ -7837,6 +7837,7 @@
         let next = current;
         const dir = forceDirection !== null ? forceDirection : playDirection;
         const ranks = currentRanks || ranksDiscovered;
+        if (ranks && ranks.length >= 4) return current;
         while (count < steps) {
           next = (next + dir + 4) % 4;
           if (!ranks.includes(next)) count++;
@@ -8581,6 +8582,33 @@
             triggerClearFieldAnim(() => {
               clearFieldLogic([...currentGraveyard, ...cards]);
               setLastPlayPlayer(playerIndex);
+
+              // 8切り等で場が流れる際に手札がゼロのプレイヤーが規定数に達しているかチェック
+              if (updatedRanks.length >= 3) {
+                const remaining = [0, 1, 2, 3].filter(p => !updatedRanks.includes(p));
+                const finalRanks = [...updatedRanks];
+                if (remaining.length === 1) {
+                  const lastP = remaining[0];
+                  setRevealedDaihinmin(lastP);
+                  setTurn(-1);
+                  if (sm.playJBackSE) sm.playJBackSE();
+                  setTimeout(() => {
+                    finalRanks.push(lastP);
+                    setRanksDiscovered(finalRanks);
+                    setRoundResults(finalRanks);
+                    setIsGameOver(true);
+                    setRevealedDaihinmin(null);
+                  }, 3000);
+                  return;
+                } else {
+                  setRanksDiscovered(finalRanks);
+                  setRoundResults(finalRanks);
+                  setIsGameOver(true);
+                  setTurn(-1);
+                  if (sm.playJBackSE) sm.playJBackSE();
+                  return;
+                }
+              }
 
               let nextStarter = playerIndex;
               if (updatedRanks.includes(nextStarter)) {
