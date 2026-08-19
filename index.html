@@ -7409,7 +7409,7 @@
         }
         
         // CPUターンのトリガー
-        if (gameStarted && !isGameOver && turn !== myPlayerIndex && !ranksDiscovered.includes(turn) && !selectionMode && !serviceAState && !isAnimating && !watchTarget && turn !== -1) {
+        if (turn !== myPlayerIndex && !ranksDiscovered.includes(turn) && !selectionMode && !serviceAState && !isAnimating && !watchTarget && turn !== -1) {
           // マルチプレイヤー時はホストのみがCPUを動かす
           if (multiplayerMode === 'active' && !isHost) return;
           const isCpuTurn = multiplayerMode === 'active' ? (remotePlayers[turn] && remotePlayers[turn].id && remotePlayers[turn].id.startsWith('cpu')) : true;
@@ -7422,7 +7422,7 @@
           }, isFastForwardRef.current ? 10 : 600);
           return () => clearTimeout(timeout);
         }
-      }, [turn, selectionMode, serviceAState, isAnimating, watchTarget, multiplayerMode, isHost, myPlayerIndex, gameStarted, isGameOver]);
+      }, [turn, selectionMode, serviceAState, isAnimating, watchTarget, multiplayerMode, isHost, myPlayerIndex]);
 
       useEffect(() => {
         if (effectMessage) {
@@ -7837,7 +7837,6 @@
         let next = current;
         const dir = forceDirection !== null ? forceDirection : playDirection;
         const ranks = currentRanks || ranksDiscovered;
-        if (ranks && ranks.length >= 4) return current;
         while (count < steps) {
           next = (next + dir + 4) % 4;
           if (!ranks.includes(next)) count++;
@@ -7910,18 +7909,8 @@
         if (newPassCount >= requiredPassCount && tableCards.length > 0) {
           if (isHost) broadcastEvent({ event: 'PASS', playerIndex: playerIndex });
           
-          const nonJokers = tableCards.filter(tc => tc.card.rank !== 'Joker');
-          let effectiveRank = nonJokers.length > 0 ? nonJokers[0].card.rank : 'Joker';
-          const isPlus5 = tableCards.length === 2 && tableCards.some(tc => tc.card.rank === '5');
-          if (isPlus5) {
-            const other = tableCards.find(tc => tc.card.rank !== '5');
-            if (other && ['A', '2', '3', '4', '6', '7', '8'].includes(other.card.rank)) {
-              const total = rankToValue(other.card.rank) + 5;
-              effectiveRank = valueToRank(total);
-            }
-          }
-          const isA_Flow = effectiveRank === 'A';
-          const countA = isPlus5 ? 1 : tableCards.length;
+          const isA_Flow = tableCards.every(tc => tc.card.rank === 'A');
+          const countA = tableCards.length;
 
           triggerClearFieldAnim(() => {
             clearFieldLogic();
@@ -8076,7 +8065,7 @@
         }
 
         // 革命判定 (同時出しが4枚以上、または3の3枚出し)
-        if (!opts.isServiceA && (playedCards.length >= 4 || isThreeOf3s)) {
+        if (playedCards.length >= 4 || isThreeOf3s) {
           isRev = !isRev;
           setIsRevolution(isRev);
         }
@@ -8582,33 +8571,6 @@
             triggerClearFieldAnim(() => {
               clearFieldLogic([...currentGraveyard, ...cards]);
               setLastPlayPlayer(playerIndex);
-
-              // 8切り等で場が流れる際に手札がゼロのプレイヤーが規定数に達しているかチェック
-              if (updatedRanks.length >= 3) {
-                const remaining = [0, 1, 2, 3].filter(p => !updatedRanks.includes(p));
-                const finalRanks = [...updatedRanks];
-                if (remaining.length === 1) {
-                  const lastP = remaining[0];
-                  setRevealedDaihinmin(lastP);
-                  setTurn(-1);
-                  if (sm.playJBackSE) sm.playJBackSE();
-                  setTimeout(() => {
-                    finalRanks.push(lastP);
-                    setRanksDiscovered(finalRanks);
-                    setRoundResults(finalRanks);
-                    setIsGameOver(true);
-                    setRevealedDaihinmin(null);
-                  }, 3000);
-                  return;
-                } else {
-                  setRanksDiscovered(finalRanks);
-                  setRoundResults(finalRanks);
-                  setIsGameOver(true);
-                  setTurn(-1);
-                  if (sm.playJBackSE) sm.playJBackSE();
-                  return;
-                }
-              }
 
               let nextStarter = playerIndex;
               if (updatedRanks.includes(nextStarter)) {
@@ -9867,12 +9829,6 @@
         if (!selectionMode && !watchSelecting && !serviceAState) {
           if (selectionTimeLeft !== 10) setSelectionTimeLeft(10);
           return;
-        }
-
-        const isCpuCurrent = timerConditionsRef.current.isCpuTurn;
-        if (isCpuCurrent && selectionTimeLeft > 0) {
-           setSelectionTimeLeft(0);
-           return;
         }
 
         if (selectionTimeLeft <= 0) {
