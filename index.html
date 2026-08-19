@@ -695,6 +695,10 @@
       transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
       filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.4)) !important;
     }
+    .k-watch-active.k-watch-viewing .player-pos:not(.k-watch-target) {
+      filter: brightness(0.3) !important;
+      pointer-events: none;
+    }
     .k-watch-active .player-pos.k-watch-selected {
       z-index: 200 !important;
     }
@@ -722,6 +726,18 @@
       border-radius: 6px;
       overflow: hidden;
       box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+    }
+    .player-center-info .watch-gauge-container,
+    .player-you-info-fixed .watch-gauge-container {
+      position: relative !important;
+      bottom: auto !important;
+      left: auto !important;
+      transform: none !important;
+      width: 60px !important;
+      height: 6px !important;
+      margin-top: 2px !important;
+      border-width: 1px !important;
+      box-shadow: none !important;
     }
     .watch-gauge-bar {
       height: 100%;
@@ -9604,6 +9620,11 @@
                   {playerIdx === myPlayerIndex ? 'YOU' : (remotePlayers[playerIdx]?.name || `CPU ${playerIdx}`)}
                   {hierarchy && <span className={`rank-badge ${hierarchy.cls}`}>{hierarchy.title}</span>}
                 </div>
+                {watchTarget && watchTarget.targetIndexes?.includes(playerIdx) && watchTarget.activatorIndex !== myPlayerIndex && (
+                  <div className="watch-gauge-container">
+                    <div className="watch-gauge-bar" style={{ animationDuration: `5000ms` }}></div>
+                  </div>
+                )}
               </div>
             ) : (
               passedPlayers.includes(playerIdx) && (
@@ -10352,6 +10373,11 @@
                     </span>
                   )}
                 </div>
+                {watchTarget && watchTarget.targetIndexes?.includes(myPlayerIndex) && watchTarget.activatorIndex !== myPlayerIndex && (
+                  <div className="watch-gauge-container">
+                    <div className="watch-gauge-bar" style={{ animationDuration: `5000ms` }}></div>
+                  </div>
+                )}
               </div>
               <button className="btn-exit-to-title mystic-btn" onClick={handleExitWithAd}>
                 <span className="mystic-btn-text">退場</span>
@@ -10805,7 +10831,7 @@
                 if (isTarget) {
                   const tIndex = targetIdxList.indexOf(pIdx);
                   const totalT = targetIdxList.length;
-                  let topPercent = 50;
+                  let topPercent = (isMobile && totalT === 1) ? 42 : 50;
                   if (totalT === 2) topPercent = tIndex === 0 ? 30 : 70;
                   if (totalT === 3) topPercent = tIndex === 0 ? 20 : tIndex === 1 ? 50 : 80;
                   const scale = isMobile ? (totalT === 1 ? 0.85 : totalT === 2 ? 0.7 : 0.55) : (totalT === 1 ? 1.1 : totalT === 2 ? 0.9 : 0.75);
@@ -10823,11 +10849,6 @@
                       </div>
                     ) : (
                       renderFanHand(hands[pIdx], pIdx, isMe || isGameOver || revealedDaihinmin === pIdx || (watchTarget?.targetIndexes?.includes(pIdx) && watchTarget?.activatorIndex === myPlayerIndex))
-                    )}
-                    {watchTarget && watchTarget.targetIndexes?.includes(pIdx) && (
-                      <div className="watch-gauge-container">
-                        <div className="watch-gauge-bar" style={{ animationDuration: `5000ms` }}></div>
-                      </div>
                     )}
                   </div>
                 );
