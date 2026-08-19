@@ -6959,7 +6959,6 @@
     
     // preload image
     const img = new Image();
-    img.src = bgUrl;
     img.onload = () => {
       // 念のため少しだけ遅延させてDOMの描画を待つ
       setTimeout(() => setIsAppLoading(false), 300);
@@ -6967,6 +6966,7 @@
     img.onerror = () => {
       setIsAppLoading(false);
     };
+    img.src = bgUrl;
   }, [gameStarted, titleStage]);
 
   useEffect(() => {
@@ -7360,6 +7360,7 @@
       const [watchTimerTick, setWatchTimerTick] = useState(0); // タイマー描画更新用
 
       const [isGameOver, setIsGameOver] = useState(false);
+      const [revealedDaihinmin, setRevealedDaihinmin] = useState(null);
       const [activeRingStyle, setActiveRingStyle] = useState({ opacity: 0 });
       const [settledTurn, setSettledTurn] = useState(-1);
       const prevTurnForRingRef = useRef(-1);
@@ -7943,12 +7944,17 @@
           const remaining = [0, 1, 2, 3].filter(p => !ranksDiscovered.includes(p));
           if (ranksDiscovered.length === 3 && remaining.length === 1) {
             const lastP = remaining[0];
-            const finalRanks = ranksDiscovered ? [...ranksDiscovered, lastP] : [lastP];
-            setRanksDiscovered(finalRanks);
-            setRoundResults(finalRanks);
-            setIsGameOver(true);
+            const finalRanks = ranksDiscovered ? [...ranksDiscovered] : [];
+            setRevealedDaihinmin(lastP);
             setTurn(-1);
-            if (sm.playJBackSE) sm.playJBackSE();
+            if (sm.playJBackSE) sm.playJBackSE(); // Optional reveal sound
+            setTimeout(() => {
+              finalRanks.push(lastP);
+              setRanksDiscovered(finalRanks);
+              setRoundResults(finalRanks);
+              setIsGameOver(true);
+              setRevealedDaihinmin(null);
+            }, 3000);
             return;
           }
 
@@ -8660,15 +8666,19 @@
           if (updatedRanks.length >= 3) {
             let finalRanks = [...updatedRanks];
             if (remaining.length === 1) {
-              finalRanks.push(remaining[0]);
+              const lastP = remaining[0];
+              setRevealedDaihinmin(lastP);
+              setTurn(-1);
+              if (sm.playJBackSE) sm.playJBackSE();
+              setTimeout(() => {
+                finalRanks.push(lastP);
+                setRanksDiscovered(finalRanks);
+                setRoundResults(finalRanks);
+                setIsGameOver(true);
+                setRevealedDaihinmin(null);
+              }, 3000);
+              return;
             }
-            setRanksDiscovered(finalRanks);
-            setRoundResults(finalRanks);
-            setIsGameOver(true);
-            setTurn(-1);
-            if (sm.playJBackSE) sm.playJBackSE();
-            return;
-          }
 
           const nextTarget = getNextPlayer(playerIndex, stepsToUse, effectRes.pDir, updatedRanks);
           if (multiplayerMode === 'active' && isHost) {
@@ -9019,15 +9029,19 @@
             if (updatedRanks.length >= 3) {
               let finalRanks = [...updatedRanks];
               if (remaining.length === 1) {
-                finalRanks.push(remaining[0]);
+                const lastP = remaining[0];
+                setRevealedDaihinmin(lastP);
+                setTurn(-1);
+                if (sm.playJBackSE) sm.playJBackSE();
+                setTimeout(() => {
+                  finalRanks.push(lastP);
+                  setRanksDiscovered(finalRanks);
+                  setRoundResults(finalRanks);
+                  setIsGameOver(true);
+                  setRevealedDaihinmin(null);
+                }, 3000);
+                return;
               }
-              setRanksDiscovered(finalRanks);
-              setRoundResults(finalRanks);
-              setIsGameOver(true);
-              setTurn(-1);
-              if (sm.playJBackSE) sm.playJBackSE();
-              return;
-            }
 
             if (isServiceA) {
               setTurn(-1);
@@ -10773,7 +10787,7 @@
                         <div className="finished-aura-text" style={{ transform: counterRotate }}>{getHierarchyTitle(ranksDiscovered.indexOf(pIdx) + 1).title}</div>
                       </div>
                     ) : (
-                      renderFanHand(hands[pIdx], pIdx, isMe || isGameOver || (watchTarget?.targetIndexes?.includes(pIdx) && watchTarget?.activatorIndex === myPlayerIndex))
+                      renderFanHand(hands[pIdx], pIdx, isMe || isGameOver || revealedDaihinmin === pIdx || (watchTarget?.targetIndexes?.includes(pIdx) && watchTarget?.activatorIndex === myPlayerIndex))
                     )}
                     {watchTarget && watchTarget.targetIndexes?.includes(pIdx) && (
                       <div className="watch-gauge-container">
