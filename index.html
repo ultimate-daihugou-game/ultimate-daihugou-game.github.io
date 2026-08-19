@@ -716,7 +716,7 @@
     /* ゲージアニメーション */
     .watch-gauge-container {
       position: absolute;
-      bottom: -150px;
+      bottom: -90px;
       left: 50%;
       transform: translateX(-50%);
       width: 300px;
@@ -10849,6 +10849,11 @@
                       </div>
                     ) : (
                       renderFanHand(hands[pIdx], pIdx, isMe || isGameOver || revealedDaihinmin === pIdx || (watchTarget?.targetIndexes?.includes(pIdx) && watchTarget?.activatorIndex === myPlayerIndex))
+                    )}
+                    {watchTarget && watchTarget.targetIndexes?.includes(pIdx) && watchTarget.activatorIndex === myPlayerIndex && (
+                      <div className="watch-gauge-container">
+                        <div className="watch-gauge-bar" style={{ animationDuration: `5000ms` }}></div>
+                      </div>
                     )}
                   </div>
                 );
