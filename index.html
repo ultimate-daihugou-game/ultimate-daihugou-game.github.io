@@ -63,17 +63,48 @@
       opacity: 0;
       pointer-events: none;
     }
-    .global-loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 3px solid rgba(255,255,255,0.1);
-      border-radius: 50%;
-      border-top-color: #8a0303;
-      animation: global-spin 1s linear infinite;
+    
+    .loading-card-container {
+      width: 80px;
+      height: 115px;
+      perspective: 1000px;
       margin-bottom: 20px;
     }
-    @keyframes global-spin {
-      to { transform: rotate(360deg); }
+    .loading-card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      transform: rotateY(180deg); /* Initial: back facing */
+    }
+    .loading-card.flipped {
+      transform: rotateY(0deg); /* Flipped: front facing */
+    }
+    .loading-card-front, .loading-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.8);
+    }
+    .loading-card-front {
+      background-size: cover;
+      background-position: center;
+      background-color: #222;
+      border: 1px solid #444;
+    }
+    .loading-card-back {
+      background: repeating-linear-gradient(
+        45deg,
+        #8a0303,
+        #8a0303 5px,
+        #2a0800 5px,
+        #2a0800 10px
+      );
+      transform: rotateY(180deg);
+      border: 2px solid #555;
     }
 
     /* 全体フィルター効果 (11バック、8切り暗転など) */
@@ -6873,6 +6904,37 @@
       return { title: "生贄候補", cls: "" };
     };
 
+    const LoadingIndicator = () => {
+      const [cardData, setCardData] = useState(null);
+      const [isFlipped, setIsFlipped] = useState(false);
+
+      useEffect(() => {
+        const ranks = ['3','4','5','6','7','8','9','10','J','Q','K','A','2','Joker'];
+        setCardData(TCG_DATA[ranks[Math.floor(Math.random() * ranks.length)]]);
+
+        const flipInterval = setInterval(() => {
+          setIsFlipped(false); // flip face down
+          setTimeout(() => {
+            setCardData(TCG_DATA[ranks[Math.floor(Math.random() * ranks.length)]]);
+            setIsFlipped(true); // flip face up
+          }, 400); // Wait for face down animation to complete
+        }, 1500);
+
+        setTimeout(() => setIsFlipped(true), 50);
+
+        return () => clearInterval(flipInterval);
+      }, []);
+
+      return (
+        <div className="loading-card-container">
+          <div className={`loading-card ${isFlipped ? 'flipped' : ''}`}>
+            <div className="loading-card-front" style={{ backgroundImage: `url(${cardData?.url || ''})` }}></div>
+            <div className="loading-card-back"></div>
+          </div>
+        </div>
+      );
+    };
+
     function App() {
       const [gameStarted, setGameStarted] = useState(false);
       const [titleStage, setTitleStage] = useState(1);
@@ -9796,7 +9858,7 @@
         <>
           {showLoadingUi && (
             <div className={`global-loading-overlay ${!isAppLoading ? 'fade-out' : ''}`}>
-              <div className="global-loading-spinner"></div>
+              <LoadingIndicator />
               <p style={{ letterSpacing: '4px', fontSize: '1.2rem' }}>LOADING...</p>
             </div>
           )}
