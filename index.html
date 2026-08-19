@@ -484,10 +484,8 @@
       z-index: 1500;
       pointer-events: none;
     }
-    .pos-top .player-pass-wrapper { top: 75px; transform: translate(-50%, -50%); z-index: 2000; }
-    .pos-left .player-pass-wrapper { top: 85px; transform: translate(-50%, -50%); z-index: 2000; }
-    .pos-right .player-pass-wrapper { top: 85px; transform: translate(-50%, -50%); z-index: 2000; }
-    .pos-bottom .player-pass-wrapper { top: -90px; transform: translate(-50%, -50%); z-index: 2000; }
+    .player-center-info .player-pass-wrapper { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; z-index: 2000; }
+    .pos-bottom .player-pass-wrapper { top: 40%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; }
     .pos-bottom .player-pass-label { font-size: 2.2rem; padding: 10px 30px; }
 
     .player-pass-label {
@@ -4837,11 +4835,14 @@
       .player-pass-label {
         font-size: 0.9rem !important;
       }
-      .pos-top .player-pass-wrapper { top: -65px !important; transform: translate(-50%, -50%) !important; }
-      .pos-left .player-pass-wrapper { top: 85px !important; transform: translate(-50%, -50%) !important; }
-      .pos-right .player-pass-wrapper { top: 85px !important; transform: translate(-50%, -50%) !important; }
+      .player-center-info .player-pass-wrapper {
+        top: 40% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+      }
       .pos-bottom .player-pass-wrapper {
-        top: -90px !important;
+        top: 40% !important;
+        left: 48% !important;
         transform: translate(-50%, -50%) !important;
       }
       .pos-bottom .player-pass-label {
@@ -10831,9 +10832,9 @@
                 if (isTarget) {
                   const tIndex = targetIdxList.indexOf(pIdx);
                   const totalT = targetIdxList.length;
-                  let topPercent = (isMobile && totalT === 1) ? 42 : 50;
-                  if (totalT === 2) topPercent = isMobile ? (tIndex === 0 ? 25 : 60) : (tIndex === 0 ? 30 : 70);
-                  if (totalT === 3) topPercent = isMobile ? (tIndex === 0 ? 15 : tIndex === 1 ? 40 : 65) : (tIndex === 0 ? 15 : tIndex === 1 ? 50 : 85);
+                  let topPercent = (isMobile && totalT === 1) ? 35 : (totalT === 1 ? 45 : 50);
+                  if (totalT === 2) topPercent = isMobile ? (tIndex === 0 ? 20 : 50) : (tIndex === 0 ? 25 : 60);
+                  if (totalT === 3) topPercent = isMobile ? (tIndex === 0 ? 12 : tIndex === 1 ? 32 : 52) : (tIndex === 0 ? 15 : tIndex === 1 ? 40 : 65);
                   const scale = isMobile ? (totalT === 1 ? 0.85 : totalT === 2 ? 0.6 : 0.45) : (totalT === 1 ? 1.1 : totalT === 2 ? 0.85 : 0.65);
                   targetStyle = { '--target-top': `${topPercent}%`, '--target-scale': scale };
                 }
