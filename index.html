@@ -484,8 +484,7 @@
       z-index: 1500;
       pointer-events: none;
     }
-    .player-center-info .player-pass-wrapper { top: 60% !important; left: 55% !important; transform: translate(-50%, -50%) !important; z-index: 2000; }
-    .pos-bottom .player-pass-wrapper { top: 40%; left: 55%; transform: translate(-50%, -50%); z-index: 2000; }
+
     .pos-bottom .player-pass-label { font-size: 2.2rem; padding: 10px 30px; }
 
     .player-pass-label {
@@ -4835,16 +4834,7 @@
       .player-pass-label {
         font-size: 0.9rem !important;
       }
-      .player-center-info .player-pass-wrapper {
-        top: 65% !important;
-        left: 60% !important;
-        transform: translate(-50%, -50%) !important;
-      }
-      .pos-bottom .player-pass-wrapper {
-        top: 55% !important;
-        left: 55% !important;
-        transform: translate(-50%, -50%) !important;
-      }
+
       .pos-bottom .player-pass-label {
         font-size: 1.8rem !important;
         padding: 8px 25px !important;
@@ -9595,7 +9585,7 @@
             {playerIdx !== myPlayerIndex ? (
               <div className="player-center-info">
                 {passedPlayers.includes(playerIdx) && (
-                  <div className="player-pass-wrapper" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)', position: 'absolute', zIndex: 3000 }}>
+                  <div className="player-pass-wrapper" style={{ top: '55%', left: '75%', transform: 'translate(-50%, -50%)', position: 'absolute', zIndex: 3000 }}>
                     <div className="player-pass-label">PASS</div>
                   </div>
                 )}
@@ -9629,7 +9619,7 @@
               </div>
             ) : (
               passedPlayers.includes(playerIdx) && (
-                <div className="player-pass-wrapper">
+                <div className="player-pass-wrapper" style={{ top: '35%', left: '75%', transform: 'translate(-50%, -50%)', position: 'absolute', zIndex: 3000 }}>
                   <div className="player-pass-label">PASS</div>
                 </div>
               )
