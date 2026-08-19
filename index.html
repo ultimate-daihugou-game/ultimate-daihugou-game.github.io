@@ -7409,7 +7409,7 @@
         }
         
         // CPUターンのトリガー
-        if (turn !== myPlayerIndex && !ranksDiscovered.includes(turn) && !selectionMode && !serviceAState && !isAnimating && !watchTarget && turn !== -1) {
+        if (gameStarted && !isGameOver && turn !== myPlayerIndex && !ranksDiscovered.includes(turn) && !selectionMode && !serviceAState && !isAnimating && !watchTarget && turn !== -1) {
           // マルチプレイヤー時はホストのみがCPUを動かす
           if (multiplayerMode === 'active' && !isHost) return;
           const isCpuTurn = multiplayerMode === 'active' ? (remotePlayers[turn] && remotePlayers[turn].id && remotePlayers[turn].id.startsWith('cpu')) : true;
@@ -7422,7 +7422,7 @@
           }, isFastForwardRef.current ? 10 : 600);
           return () => clearTimeout(timeout);
         }
-      }, [turn, selectionMode, serviceAState, isAnimating, watchTarget, multiplayerMode, isHost, myPlayerIndex]);
+      }, [turn, selectionMode, serviceAState, isAnimating, watchTarget, multiplayerMode, isHost, myPlayerIndex, gameStarted, isGameOver]);
 
       useEffect(() => {
         if (effectMessage) {
