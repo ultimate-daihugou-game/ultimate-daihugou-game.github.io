@@ -4774,8 +4774,8 @@
     @media (max-width: 768px) {
       /* Player 0 Hand Cards */
       .player-pos.pos-bottom .card {
-        width: 95px !important;
-        height: 135px !important;
+        width: 82px !important;
+        height: 116px !important;
         bottom: 0 !important;
       }
 
@@ -7731,17 +7731,26 @@
       // Edge animation start points
       const getPlayerEdgePosition = (playerIndex) => {
         const dispIdx = getDisplayIndex(playerIndex);
-        
         const isMobile = window.innerWidth <= 768;
-        const yOffset = isMobile ? '38vh' : '42vh';
-        const xOffset = isMobile ? '38vw' : '42vw';
-
-        switch (dispIdx) {
-          case 0: return { top: `calc(50% + ${yOffset})`, left: '50%', rot: '0deg' };
-          case 1: return { top: '50%', left: `calc(50% - ${xOffset})`, rot: '90deg' };
-          case 2: return { top: `calc(50% - ${yOffset})`, left: '50%', rot: '180deg' };
-          case 3: return { top: '50%', left: `calc(50% + ${xOffset})`, rot: '-90deg' };
-          default: return { top: '50%', left: '50%', rot: '0deg' };
+        
+        if (isMobile) {
+          switch (dispIdx) {
+            case 0: return { top: `calc(50% + 40vh)`, left: '50%', rot: '0deg' };
+            case 1: return { top: `calc(50% - 35vh)`, left: `calc(50% - 40vw)`, rot: '45deg' }; // Top-Left icon
+            case 2: return { top: `calc(50% - 40vh)`, left: '50%', rot: '180deg' }; // Top-Center icon
+            case 3: return { top: `calc(50% - 35vh)`, left: `calc(50% + 40vw)`, rot: '-45deg' }; // Top-Right icon
+            default: return { top: '50%', left: '50%', rot: '0deg' };
+          }
+        } else {
+          const yOffset = '42vh';
+          const xOffset = '42vw';
+          switch (dispIdx) {
+            case 0: return { top: `calc(50% + ${yOffset})`, left: '50%', rot: '0deg' };
+            case 1: return { top: '50%', left: `calc(50% - ${xOffset})`, rot: '90deg' };
+            case 2: return { top: `calc(50% - ${yOffset})`, left: '50%', rot: '180deg' };
+            case 3: return { top: '50%', left: `calc(50% + ${xOffset})`, rot: '-90deg' };
+            default: return { top: '50%', left: '50%', rot: '0deg' };
+          }
         }
       };
 
