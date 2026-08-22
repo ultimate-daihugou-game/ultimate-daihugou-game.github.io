@@ -7569,17 +7569,7 @@
           }
         }
         
-        let targetRoom = null;
-        if (isHostMode) {
-          const { data, error } = await supabaseClient.from('rooms').insert([{ room_code: roomCode, status: 'waiting' }]).select().single();
-          if (error) { alert("エラーが発生しました: " + error.message + "\n※Supabaseにroomsテーブルが作成されているか確認してください"); return; }
-          targetRoom = data;
-        } else {
-          const { data, error } = await supabaseClient.from('rooms').select('*').eq('room_code', roomCode).single();
-          if (error || !data) { alert("ルームが見つかりません。(" + (error?.message || '') + ")"); return; }
-          targetRoom = data;
-        }
-        
+        const targetRoom = { id: roomCode, room_code: roomCode };
         setCurrentRoom(targetRoom);
         setIsHost(isHostMode);
         setMultiplayerMode(multiplayerMode === 'online' ? 'active' : 'lobby');
@@ -9615,7 +9605,7 @@
               </div>
             ) : (
               passedPlayers.includes(playerIdx) && (
-                <div className="player-pass-wrapper" style={{ bottom: '10px', left: '40%', top: 'auto', transform: 'translate(-50%, -50%)', position: 'absolute', zIndex: 3000 }}>
+                <div className="player-pass-wrapper" style={{ bottom: '10px', left: '38%', top: 'auto', transform: 'translate(-50%, -50%)', position: 'absolute', zIndex: 3000 }}>
                   <div className="player-pass-label">PASS</div>
                 </div>
               )
@@ -9673,32 +9663,25 @@
 
         // Supabase Matching Logic
         try {
-          const { error } = await supabaseClient.from('matchmaking_queue').upsert({
-            uid: myUid,
-            name: myProfile.display_name,
-            rating: playerRating
-          });
-          if (error) throw error;
-
-          // Subscribe to matchmaking queue changes
-          const channel = supabaseClient.channel('matchmaking');
+          // Subscribe to matchmaking queue changes via Presence
+          const channel = supabaseClient.channel('matchmaking', { config: { presence: { key: myUid } } });
           let isMatched = false;
 
-          channel.on('postgres_changes', { event: '*', schema: 'public', table: 'matchmaking_queue' }, async (payload) => {
+          channel.on('presence', { event: 'sync' }, () => {
             if (isMatched) return;
-
-            // Check if queue has enough players (2 players for testing)
-            const { data } = await supabaseClient.from('matchmaking_queue').select('*').order('joined_at', { ascending: true });
+            const state = channel.presenceState();
+            const players = [];
+            for (const id in state) { players.push(state[id][0]); }
             
-            if (data && data.length >= 2) {
-              const myIndex = data.findIndex(p => p.uid === myUid);
-              if (myIndex === -1) return; // I'm no longer in queue
-              
-              const matchedPlayers = data.slice(0, 2);
+            // Sort by joined_at ascending
+            players.sort((a, b) => a.joined_at - b.joined_at);
+            
+            if (players.length >= 2) {
+              const matchedPlayers = players.slice(0, 2);
               if (matchedPlayers.some(p => p.uid === myUid)) {
                 isMatched = true;
+                channel.untrack();
                 supabaseClient.removeChannel(channel);
-                await supabaseClient.from('matchmaking_queue').delete().eq('uid', myUid);
                 
                 const hostUid = matchedPlayers[0].uid;
                 const isMyHost = hostUid === myUid;
@@ -9708,17 +9691,19 @@
                 
                 if (isMyHost) {
                   startAsHost(hostPeerId);
-                  // remote players will be added when they JOIN
                   setRemotePlayers([{ id: 'local', name: myProfile.display_name }]);
                 } else {
-                  // Guest logic
                   setTimeout(() => {
                     joinAsGuest(hostPeerId);
-                  }, 2000); // Wait for host to create peer
+                  }, 2000);
                 }
               }
             }
-          }).subscribe();
+          }).subscribe(async (status) => {
+            if (status === 'SUBSCRIBED') {
+              await channel.track({ uid: myUid, name: myProfile.display_name, joined_at: Date.now() });
+            }
+          });
 
         } catch (e) {
           console.error("Matchmaking error", e);
@@ -9729,6 +9714,14 @@
       };
 
       const cancelOnlineMatch = () => {
+        if (supabaseClient) {
+          const channels = supabaseClient.getChannels();
+          channels.forEach(ch => {
+            if (ch.topic.includes('matchmaking')) {
+              supabaseClient.removeChannel(ch);
+            }
+          });
+        }
         setIsOnlineMatch(false);
         setOnlineMatchStatus('idle');
         setMultiplayerMode(null);
@@ -9747,7 +9740,7 @@
           return;
         }
         try {
-          const { data, error } = await supabase
+          const { data, error } = await supabaseClient
             .from('users')
             .select('display_name, rating')
             .order('rating', { ascending: false })
