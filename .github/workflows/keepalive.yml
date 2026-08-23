@@ -1,0 +1,17 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Run at 00:00 every 2 days
+    - cron: '0 0 */2 * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase API
+        run: |
+          curl -X GET 'https://gxqowjjwhmbvvzuixcix.supabase.co/rest/v1/' \
+            -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4cW93amp3aG1idnZ6dWl4Y2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NjA2NjQsImV4cCI6MjA5OTIzNjY2NH0.tJLMJ-SDZpqcYIx0izkFff_lP9wBkQDMHt7cnVVANAQ' \
+            -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4cW93amp3aG1idnZ6dWl4Y2l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NjA2NjQsImV4cCI6MjA5OTIzNjY2NH0.tJLMJ-SDZpqcYIx0izkFff_lP9wBkQDMHt7cnVVANAQ'
