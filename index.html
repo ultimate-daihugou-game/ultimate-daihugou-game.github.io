@@ -9216,11 +9216,23 @@
               const sortedHands = newHands.map(h => sortHand(h));
               setHands(sortedHands);
               setTurn(0);
-              if (multiplayerMode === 'active' && isHost) broadcastState(sortedHands, 0);
+              
+              if ((multiplayerMode === 'active' || multiplayerMode === 'online') && isHost) {
+                // Ensure CPU slots are filled for Online Match using latest Ref to avoid closure bugs
+                let finalRemotePlayers = [...remotePlayersRef.current];
+                if (finalRemotePlayers.length < 4) {
+                  for (let j = finalRemotePlayers.length; j < 4; j++) {
+                    finalRemotePlayers.push({ id: `cpu${j}`, name: `CPU ${j}` });
+                  }
+                  setRemotePlayers(finalRemotePlayers);
+                }
+                broadcastState(sortedHands, 0, finalRemotePlayers);
+              }
             }
             setIsDealing(true);
             setTimeout(() => setIsDealing(false), 2000);
             setGameStarted(true);
+            if (multiplayerMode === 'online') setMultiplayerMode('active');
             sm.playGameBGM();
             setTimeout(() => setIsTransitioning(false), 50);
           }, remainingTime);
