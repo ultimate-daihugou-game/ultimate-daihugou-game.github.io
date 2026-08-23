@@ -6435,14 +6435,11 @@
         isSupabaseReady = true;
       }
       
-      // UUID v4 generator for anonymous user
-      if (!myUid) {
-        myUid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-        localStorage.setItem('my_uid', myUid);
+      // UUID v4 generator for anonymous user (unique per session for testing)
+      if (!localStorage.getItem('my_uid_base')) {
+        localStorage.setItem('my_uid_base', 'user-' + Math.random().toString(36).substring(2, 15));
       }
+      myUid = localStorage.getItem('my_uid_base') + '-' + Math.random().toString(36).substring(2, 9);
     } catch (e) {
       console.warn("Supabase initialization failed.", e);
     }
@@ -7558,7 +7555,7 @@
         joinAsGuest(hostId);
       };
 
-      const joinRoomAndSyncPresence = async (roomCode, userProfile, isHostMode = false) => {
+      const joinRoomAndSyncPresence = async (roomCode, userProfile, isHostMode = false, isOnlineMode = false) => {
         if (!isSupabaseReady) {
           if (typeof window !== 'undefined' && window.supabase && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
             supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -7570,14 +7567,20 @@
         }
         
         const targetRoom = { id: roomCode, room_code: roomCode };
+        let hasAutoStarted = false;
         setCurrentRoom(targetRoom);
         setIsHost(isHostMode);
-        setMultiplayerMode(multiplayerMode === 'online' ? 'active' : 'lobby');
+        setMultiplayerMode(isOnlineMode ? 'active' : 'lobby');
         
         const myPlayerData = { id: myUid || `guest-${Date.now()}`, name: userProfile.name, avatar: userProfile.avatar || 'knight' };
         if (isHostMode) setRemotePlayers([myPlayerData]);
         
-        const channel = supabaseClient.channel(`room:${targetRoom.id}`, { config: { presence: { key: myPlayerData.id } } });
+        const channel = supabaseClient.channel(`room:${targetRoom.id}`, { 
+          config: { 
+            presence: { key: myPlayerData.id },
+            broadcast: { ack: false, self: true }
+          } 
+        });
         setRoomChannel(channel);
 
         channel
@@ -7597,7 +7600,8 @@
                return [...players, ...cpus];
              });
              
-             if (isHostMode && multiplayerMode === 'online' && players.length >= 2 && !gameStarted) {
+             if (isHostMode && isOnlineMode && players.length >= 2 && !hasAutoStarted) {
+                hasAutoStarted = true;
                 setTimeout(() => startGame(), 1000);
              }
           })
@@ -7699,12 +7703,18 @@
         channel.subscribe(async (status) => {
           if (status === 'SUBSCRIBED') {
             await channel.track({ ...myPlayerData, joined_at: new Date().toISOString() });
+          } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+            alert("ルームへの接続に失敗しました。(Status: " + status + ")");
+            if (isOnlineMode) {
+              setOnlineMatchStatus('idle');
+            }
+            setMultiplayerMode(null);
           }
         });
       };
 
-      const startAsHost = (hostId) => joinRoomAndSyncPresence(hostId, { name: myProfile.display_name, avatar: myProfile.avatar }, true);
-      const joinAsGuest = (hostId) => joinRoomAndSyncPresence(hostId, { name: myProfile.display_name, avatar: myProfile.avatar }, false);
+      const startAsHost = (hostId, isOnlineMode = false) => joinRoomAndSyncPresence(hostId, { name: myProfile.display_name, avatar: myProfile.avatar }, true, isOnlineMode);
+      const joinAsGuest = (hostId, isOnlineMode = false) => joinRoomAndSyncPresence(hostId, { name: myProfile.display_name, avatar: myProfile.avatar }, false, isOnlineMode);
 
       const broadcastEvent = async (eventData) => {
         if (!roomChannel) return;
@@ -9673,15 +9683,20 @@
             const players = [];
             for (const id in state) { players.push(state[id][0]); }
             
-            // Sort by joined_at ascending
-            players.sort((a, b) => a.joined_at - b.joined_at);
+            // Sort by joined_at ascending, fallback to uid for absolute determinism
+            players.sort((a, b) => {
+              if (a.joined_at === b.joined_at) return a.uid.localeCompare(b.uid);
+              return a.joined_at - b.joined_at;
+            });
             
             if (players.length >= 2) {
               const matchedPlayers = players.slice(0, 2);
               if (matchedPlayers.some(p => p.uid === myUid)) {
                 isMatched = true;
-                channel.untrack();
-                supabaseClient.removeChannel(channel);
+                setTimeout(() => {
+                  channel.untrack();
+                  supabaseClient.removeChannel(channel);
+                }, 3000);
                 
                 const hostUid = matchedPlayers[0].uid;
                 const isMyHost = hostUid === myUid;
@@ -9690,11 +9705,11 @@
                 setOnlineMatchStatus('found');
                 
                 if (isMyHost) {
-                  startAsHost(hostPeerId);
+                  startAsHost(hostPeerId, true);
                   setRemotePlayers([{ id: 'local', name: myProfile.display_name }]);
                 } else {
                   setTimeout(() => {
-                    joinAsGuest(hostPeerId);
+                    joinAsGuest(hostPeerId, true);
                   }, 2000);
                 }
               }
@@ -9702,6 +9717,11 @@
           }).subscribe(async (status) => {
             if (status === 'SUBSCRIBED') {
               await channel.track({ uid: myUid, name: myProfile.display_name, joined_at: Date.now() });
+            } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+              console.error("Matchmaking channel error:", status);
+              setOnlineMatchStatus('idle');
+              setMultiplayerMode(null);
+              alert("通信サーバーに接続できませんでした。(Status: " + status + ")");
             }
           });
 
