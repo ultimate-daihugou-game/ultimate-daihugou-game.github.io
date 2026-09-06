@@ -6437,28 +6437,114 @@
     <a href="#privacy" style="color: #ccc; text-decoration: none;">プライバシーポリシー</a>
   </footer>
 
-  <section id="seo-content" style="padding: 40px 20px; max-width: 800px; margin: 0 auto; color: #ddd; font-family: 'Noto Serif JP', serif; line-height: 1.6; min-height: 100vh;">
-    <h2 id="about-game" style="color: var(--color-gold); border-bottom: 1px solid var(--color-gold); padding-bottom: 10px; margin-top: 40px;">ゲームの遊び方</h2>
-    <p>本サイトは、伝統的なトランプゲーム「大富豪」に独自の特殊要素を掛け合わせたオンライン対戦カードゲームです。リアルタイム通信により、離れたプレイヤー同士で白熱した心理戦を楽しめます。</p>
-    <p>各プレイヤーは配られた手札から、場に出ているカードより強いカードを出していきます。最初に手札を全て無くしたプレイヤーの勝利となります。</p>
-    <p>本作の特徴として、プレイヤーにはHP（体力）があり、特定のカードを出すことで相手にダメージを与えたり、自身を回復したりする戦略的な要素が含まれています。</p>
+  <section id="seo-content" style="padding: 40px 20px; max-width: 800px; margin: 0 auto; color: #ddd; font-family: 'Noto Serif JP', serif; line-height: 1.8; min-height: 100vh;">
+    <h2 id="about-game" style="color: var(--color-gold); border-bottom: 1px solid var(--color-gold); padding-bottom: 10px; margin-top: 40px;">ゲームの遊び方・詳細ルール</h2>
+    
+    <p>「ULTIMATE DAIHUGOU: DEATH GAME（アルティメット大富豪：デスゲーム）」へようこそ。本サイトは、日本で古くから親しまれている伝統的なトランプゲーム「大富豪（大貧民）」をベースに、独自のHP（体力）システムや強力な特殊カード効果を掛け合わせた、完全オリジナルのオンライン対戦型ブラウザゲームです。リアルタイム通信技術を活用し、離れた場所にいるプレイヤー同士で、手に汗握る白熱の心理戦・頭脳戦を無料でお楽しみいただけます。</p>
 
-    <h2 id="terms" style="color: var(--color-gold); border-bottom: 1px solid var(--color-gold); padding-bottom: 10px; margin-top: 60px;">利用規約</h2>
+    <h3 style="color: #eee; font-size: 1.3rem; margin-top: 30px; border-left: 4px solid var(--color-gold); padding-left: 10px;">基本ルール</h3>
+    <p>基本的な進行は通常の大富豪と同じです。各プレイヤーに均等にカードが配られ、最初のプレイヤーが任意のカードを場に出します。次のプレイヤーは、場に出ているカードよりも「強い」カードを出さなければなりません。出せるカードがない場合、または戦略的に出したくない場合は「パス」を選択できます。全員がパスをして場が流れたら、最後にカードを出したプレイヤーが新たなスタートとして好きなカードを出せます。これを繰り返し、最初に手札を全て無くしたプレイヤーが勝利（大富豪）となります。</p>
+    <p>カードの強さは以下の通りです（通常時）：<br>
+    <strong>弱 [ 3 &lt; 4 &lt; 5 &lt; 6 &lt; 7 &lt; 8 &lt; 9 &lt; 10 &lt; J &lt; Q &lt; K &lt; A &lt; 2 &lt; Joker ] 強</strong></p>
+
+    <h3 style="color: #eee; font-size: 1.3rem; margin-top: 30px; border-left: 4px solid var(--color-gold); padding-left: 10px;">本作最大の特徴：HP（体力）システム</h3>
+    <p>本ゲームが通常の大富豪と大きく異なる点は、各プレイヤーに「HP（体力）」が設定されていることです。ゲーム開始時、全プレイヤーは一定のHPを持ってスタートします。特定の特殊カードを場に出すことで、対戦相手に直接ダメージを与えたり、自分のHPを回復したりすることができます。</p>
+    <p>手札を最初に無くすこと（通常の勝利条件）を目指すだけでなく、<strong>「相手のHPをゼロにして脱落させる」</strong>という攻撃的なプレイスタイルも可能です。これにより、いつ強力なカードを切るか、いつダメージを温存するかという、従来の大富豪にはない深い戦略性が生まれます。</p>
+
+    <h3 style="color: #eee; font-size: 1.3rem; margin-top: 30px; border-left: 4px solid var(--color-gold); padding-left: 10px;">特殊カード（デスゲーム・エフェクト）一覧</h3>
+    <p>本ゲームには、戦局を大きく左右する多数の特殊ルール（役）が導入されています。それぞれのカードが持つ効果を熟知することが、勝利への近道です。</p>
+    <ul style="list-style-type: none; padding-left: 0;">
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【4】4シールド（防御）</strong><br>
+        4のカードを出すと、シールドが展開されます。次に自分が受ける予定のダメージを一定量軽減、または無効化することができます。相手の猛攻を凌ぐための重要な防御カードです。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【5】5スキップ（順番飛ばし）</strong><br>
+        5のカードを出すと、次のプレイヤーの順番をスキップ（1回休み）させます。2枚出しなら2人スキップとなり、自分に有利な展開を強制的に作り出すことができます。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【6】6フェニックス（回復）</strong><br>
+        6のカードは回復を司ります。場に出すことで、自身の失われたHPを回復することができます。ピンチの状況から立て直すための生命線となるカードです。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【7】7渡し（カード譲渡）</strong><br>
+        7のカードを出すと、自分の手札から不要なカードを選んで、次のプレイヤーに強制的に押し付けることができます。手札を減らしつつ相手を妨害できる強力な効果です。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【8】8切り（強制リセット＆攻撃）</strong><br>
+        8のカードを出した瞬間、問答無用でそのターンは終了（場が流れる）し、次も自分からカードを出すことができます。本作ではさらに攻撃要素が付加されており、出すだけで相手にダメージを与えます。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【9】9リバース（順番反転）</strong><br>
+        9のカードを出すと、手番の回る順番が逆周りになります。時計回りが反時計回りに、反時計回りが時計回りになるため、次の手番を読んで戦略を立てる必要があります。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【10】10捨て（手札破棄）</strong><br>
+        10のカードを出すと、追加で手札から任意のカードを1枚捨てることができます。不要なカードを処理し、一気に手札を減らすチャンスとなります。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【J】11バック（革命の一時的発生）</strong><br>
+        J（11）のカードが場に出ている間だけ、カードの強さが一時的に完全に逆転します（3が最強、2が最弱）。場が流れると元の強さに戻ります。状況を一変させるトリッキーなカードです。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【Q】12ボンバー（全体攻撃）</strong><br>
+        Q（12）のカードを出すと、自分以外の全プレイヤーに対して爆発的なダメージを与えます。一気に複数の相手のHPを削ることができる、非常に強力な攻撃カードです。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【K】キングウォッチ（妨害）</strong><br>
+        K（13）を出されたプレイヤーは、特定の行動が制限されたり、ペナルティを受けたりする「ウォッチ状態」になります。相手の戦略を縛るいやらしい効果を持ちます。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【A】サービスエース（特殊）</strong><br>
+        A（1）のカードは、通常の大富豪でも2に次ぐ強さを持ちますが、本作ではさらに特殊な効果を発揮する場合があります。
+      </li>
+      <li style="margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+        <strong style="color: var(--color-gold); font-size: 1.1rem;">【Joker】ジョーカー（最強カード）</strong><br>
+        他のどのカードよりも強い最強のカードです。どんな場面でも出すことができ（一部例外あり）、場を制圧することができます。また、他のカードと組み合わせてワイルドカードとしても使用可能です。
+      </li>
+    </ul>
+
+    <h3 style="color: #eee; font-size: 1.3rem; margin-top: 30px; border-left: 4px solid var(--color-gold); padding-left: 10px;">革命ルールについて</h3>
+    <p>同じ数字のカードを4枚以上同時に出した場合、「革命」が発生します。革命が起きると、カードの強さが完全に逆転し、3が最強、2が最弱となります。この状態は、誰かが再び革命を起こす（再度4枚出しをする）まで永続します。形勢を逆転させる最大の見せ場です。</p>
+
+    <h3 style="color: #eee; font-size: 1.3rem; margin-top: 30px; border-left: 4px solid var(--color-gold); padding-left: 10px;">戦略とヒント</h3>
+    <p>ただ強いカードを出せば勝てるわけではありません。相手の手札を読み、いつ「8切り」で主導権を握るか、いつ「Q」で全体攻撃を仕掛けるか、そしていつ「4シールド」で身を守るか。HPの残量と手札のバランスを見極めることが勝利の鍵です。オンライン対戦では、相手のプレイスタイルに応じた柔軟な戦術が求められます。</p>
+
+    <hr style="border: 0; border-top: 1px solid #444; margin: 50px 0;">
+
+    <h2 id="terms" style="color: var(--color-gold); border-bottom: 1px solid var(--color-gold); padding-bottom: 10px;">利用規約</h2>
+    <p>この利用規約（以下、「本規約」といいます。）は、「ULTIMATE DAIHUGOU: DEATH GAME」（以下、「本ゲーム」といいます。）の利用条件を定めるものです。ユーザーの皆さまには、本規約に従って本ゲームをご利用いただきます。</p>
     <ul>
-      <li style="margin-bottom: 8px;">本ゲームは無料でプレイいただけます。</li>
-      <li style="margin-bottom: 8px;">本ゲームのシステム、デザイン、画像等の著作権は管理者に帰属します。無断転載やプログラムの改ざん、サーバーへの過度な負荷をかける行為は禁止します。</li>
-      <li style="margin-bottom: 8px;">他プレイヤーへの迷惑行為（遅延行為など）が確認された場合、アクセスを制限する場合があります。</li>
+      <li style="margin-bottom: 10px;"><strong>第1条（適用）</strong> 本規約は、ユーザーと本ゲームの利用に関わる一切の関係に適用されるものとします。</li>
+      <li style="margin-bottom: 10px;"><strong>第2条（利用料金）</strong> 本ゲームは無料でプレイいただけますが、通信にかかる費用はユーザーのご負担となります。</li>
+      <li style="margin-bottom: 10px;"><strong>第3条（禁止事項）</strong> ユーザーは、本ゲームの利用にあたり、以下の行為をしてはなりません。
+        <ul style="margin-top: 5px;">
+          <li>法令または公序良俗に違反する行為</li>
+          <li>本ゲームのサーバーやネットワークの機能を破壊したり、妨害したりする行為</li>
+          <li>他のユーザーに対する嫌がらせ、誹謗中傷、意図的な遅延など、プレイを著しく妨害する行為</li>
+          <li>本ゲームのシステム、デザイン、画像、音声等の著作権を侵害する行為</li>
+        </ul>
+      </li>
+      <li style="margin-bottom: 10px;"><strong>第4条（利用制限）</strong> 管理者は、ユーザーが本規約のいずれかに違反した場合、事前の通知なく、本ゲームの利用を制限できるものとします。</li>
+      <li style="margin-bottom: 10px;"><strong>第5条（免責事項）</strong> 管理者は、本ゲームに事実上または法律上の瑕疵がないことを明示的にも黙示的にも保証しておりません。本ゲームに起因してユーザーに生じたあらゆる損害について一切の責任を負いません。</li>
     </ul>
 
     <h2 id="privacy" style="color: var(--color-gold); border-bottom: 1px solid var(--color-gold); padding-bottom: 10px; margin-top: 60px;">プライバシーポリシー</h2>
-    <h3 style="color: #ccc; font-size: 1.1rem; margin-top: 20px;">1. 広告の配信について</h3>
-    <p>当サイトでは、第三者配信の広告サービス（Google AdSense）を利用しております。広告配信事業者は、ユーザーの興味に応じた広告を表示するため、当サイトや他サイトへのアクセスに関する情報である「Cookie」（氏名、住所、メールアドレス、電話番号は含まれません）を使用することがあります。Cookieを無効にする設定およびGoogleアドセンスに関する詳細は、「Googleのポリシーと規約」をご確認ください。</p>
+    <p>本ゲームおよび本サイト（以下、「当サイト」といいます。）は、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下、「本ポリシー」といいます。）を定めます。</p>
+    
+    <h3 style="color: #ccc; font-size: 1.1rem; margin-top: 20px;">1. 個人情報の収集と利用について</h3>
+    <p>当サイトのゲームプレイにおいて、氏名、住所、電話番号などの個人を特定できる情報を収集することはありません。ゲーム内のユーザー名やレート情報はデータベースに保存されますが、これらはゲームの進行およびランキング表示の目的のみに使用されます。</p>
 
-    <h3 style="color: #ccc; font-size: 1.1rem; margin-top: 20px;">2. アクセス解析ツールについて</h3>
-    <p>当サイトでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。トラフィックデータの収集のためにCookieを使用していますが、データは匿名で収集されており、個人を特定するものではありません。</p>
+    <h3 style="color: #ccc; font-size: 1.1rem; margin-top: 20px;">2. 広告の配信について（Google AdSense）</h3>
+    <p>当サイトでは、第三者配信の広告サービス（Google AdSense）を利用しております。広告配信事業者は、ユーザーの興味に応じた商品やサービスの広告を表示するため、当サイトや他サイトへのアクセスに関する情報である「Cookie」（氏名、住所、メールアドレス、電話番号は含まれません）を使用することがあります。<br>
+    Cookieを無効にする設定およびGoogleアドセンスに関する詳細は、<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener noreferrer" style="color: var(--color-gold);">Googleのポリシーと規約</a>をご確認ください。</p>
 
-    <h3 style="color: #ccc; font-size: 1.1rem; margin-top: 20px;">3. 免責事項</h3>
-    <p>当サイトの利用によって生じたソフトウェア、ハードウェア上のトラブルやその他の損害について、管理者は一切の責任を負いかねます。</p>
+    <h3 style="color: #ccc; font-size: 1.1rem; margin-top: 20px;">3. アクセス解析ツールについて（Google Analytics）</h3>
+    <p>当サイトでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。このGoogleアナリティクスはトラフィックデータの収集のためにCookieを使用しています。このトラフィックデータは匿名で収集されており、個人を特定するものではありません。この機能はCookieを無効にすることで収集を拒否することが出来ますので、お使いのブラウザの設定をご確認ください。</p>
+
+    <h3 style="color: #ccc; font-size: 1.1rem; margin-top: 20px;">4. プライバシーポリシーの変更</h3>
+    <p>本ポリシーの内容は、法令その他本ポリシーに別段の定めのある事項を除いて、ユーザーに通知することなく変更することができるものとします。変更後のプライバシーポリシーは、当サイトに掲載したときから効力を生じるものとします。</p>
+
   </section>
 
   <script type="text/babel">
